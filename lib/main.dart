@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'core/config/routes.dart';
+import 'core/config/theme.dart';
 import 'core/utils/methodes.dart';
 import 'view/screen/details.dart';
 import 'view/screen/home.dart';
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       locale: const Locale('ar'),
+      themeMode: AppTheme().instance.themeMode,
+      theme: AppTheme().instance.theme,
+      darkTheme: AppTheme().instance.darkTheme,
       initialRoute: Routes.home,
       getPages: [
         GetPage(name: Routes.home, page: () => Home()),

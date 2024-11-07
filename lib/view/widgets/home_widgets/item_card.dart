@@ -49,7 +49,7 @@ class _ItemCardState extends State<ItemCard> {
           valueNotifier: _valueNotifier,
           progress: cumulativeBytesLoaded?.toDouble() ?? 100,
           maxProgress: expectedTotalBytes?.toDouble() ?? 100,
-          foregroundColor: AppTheme.primaryColor,
+          foregroundColor: AppTheme().instance.theme.primaryColor,
           backgroundColor: const Color(0xffeeeeee),
           foregroundStrokeWidth: 5,
           animation: true,
