@@ -9,11 +9,11 @@ class AppTheme {
   late ThemeData theme;
 
   static initTheme() async {
-    _instance.themeMode = await _instance.getThemeMode();
-    _instance.theme = _instance.getTheme();
+    _instance.themeMode = await _instance._getThemeMode();
+    _instance.theme = _instance._getTheme();
   }
 
-  Future<ThemeMode> getThemeMode() async {
+  Future<ThemeMode> _getThemeMode() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     late String themeMode;
     themeMode = sharedPreferences.getString('themeMode') ?? 'system';
@@ -28,7 +28,7 @@ class AppTheme {
     }
   }
 
-  ThemeData getTheme() {
+  ThemeData _getTheme() {
     switch (themeMode) {
       case ThemeMode.light:
         return lightTheme;
@@ -47,7 +47,7 @@ class AppTheme {
     } else {
       _instance.themeMode = themeMode;
     }
-    _instance.theme = getTheme();
+    _instance.theme = _getTheme();
     Get.changeTheme(_instance.theme);
     getxController?.update();
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -60,15 +60,21 @@ class AppTheme {
                 : 'system');
   }
 
-// light Theme
+//* light Theme
   final ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
-    appBarTheme: AppBarTheme(
-        backgroundColor: Colors.green,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-  );
+      useMaterial3: true,
+      appBarTheme: AppBarTheme(
+          backgroundColor: Colors.green,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+      primaryColor: const Color.fromARGB(255, 91, 151, 255),
+      shadowColor: const Color.fromARGB(137, 108, 101, 101),
+      colorScheme: const ColorScheme.light(
+        tertiary: Color.fromARGB(96, 42, 42, 42),
+        secondary: Color.fromARGB(255, 250, 182, 92),
+      ));
 
-  // dark Theme
+  //* dark Theme
   final ThemeData darkTheme = ThemeData(
       useMaterial3: true,
       appBarTheme: const AppBarTheme(

@@ -32,40 +32,21 @@ class _ItemCardState extends State<ItemCard> {
         height: Get.height * 0.2,
         decoration: BoxDecoration(
           color: Colors.grey,
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme().instance.theme.shadowColor,
+              blurRadius: 2,
+              spreadRadius: 2.5,
+            )
+          ],
           borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: AppTheme().instance.theme.colorScheme.tertiary,
+          ),
         ),
         child: _buildImage(),
       ),
     );
-  }
-
-  Widget _buildLoadingProgress(
-      int? cumulativeBytesLoaded, int? expectedTotalBytes) {
-    return Container(
-        color: Colors.grey,
-        padding: const EdgeInsets.all(30),
-        child: DashedCircularProgressBar.aspectRatio(
-          aspectRatio: 1, // width ÷ height
-          valueNotifier: _valueNotifier,
-          progress: cumulativeBytesLoaded?.toDouble() ?? 100,
-          maxProgress: expectedTotalBytes?.toDouble() ?? 100,
-          foregroundColor: AppTheme().instance.theme.primaryColor,
-          backgroundColor: const Color(0xffeeeeee),
-          foregroundStrokeWidth: 5,
-          animation: true,
-          child: Center(
-            child: ValueListenableBuilder(
-              valueListenable: _valueNotifier,
-              builder: (_, double value, __) => Text(
-                '${value.toInt()}%',
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15),
-              ),
-            ),
-          ),
-        ));
   }
 
   Widget _buildImage() {
@@ -101,33 +82,73 @@ class _ItemCardState extends State<ItemCard> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Column(children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text('${widget.model?.year?.replaceAll(RegExp(r'[()]'), '')}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                  )),
-              SizedBox(width: Get.width * 0.02),
-            ],
-          ),
-          SizedBox(height: Get.height * 0.11),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.black.withAlpha(100),
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: Column(children: [
+            Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [_buildYear(widget.model?.year)]),
+            SizedBox(height: Get.height * 0.1),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withAlpha(100),
+              ),
+              child: Text(
+                '${widget.model?.title}',
+                maxLines: 3,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 255, 249, 249),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
             ),
-            child: Text(
-              '${widget.model?.title}',
-              maxLines: 3,
-              textAlign: TextAlign.center,
+          ]),
+        ));
+  }
+
+  Widget _buildYear(String? year) => year != null
+      ? Container(
+          padding: EdgeInsets.symmetric(horizontal: Get.width * 0.01),
+          margin:
+              EdgeInsets.only(top: Get.height * 0.005, left: Get.width * 0.015),
+          decoration: BoxDecoration(
+              color: AppTheme().instance.theme.colorScheme.secondary,
+              borderRadius: BorderRadius.circular(3)),
+          child: Text(year.replaceAll(RegExp(r'[()]'), ''),
               style: const TextStyle(
-                color: Color.fromARGB(255, 255, 249, 249),
                 fontWeight: FontWeight.w600,
-                fontSize: 12,
+              )),
+        )
+      : const SizedBox();
+
+  Widget _buildLoadingProgress(
+      int? cumulativeBytesLoaded, int? expectedTotalBytes) {
+    return Container(
+        color: Colors.grey,
+        padding: const EdgeInsets.all(30),
+        child: DashedCircularProgressBar.aspectRatio(
+          aspectRatio: 1, // width ÷ height
+          valueNotifier: _valueNotifier,
+          progress: cumulativeBytesLoaded?.toDouble() ?? 100,
+          maxProgress: expectedTotalBytes?.toDouble() ?? 100,
+          foregroundColor: AppTheme().instance.theme.colorScheme.secondary,
+          backgroundColor: const Color(0xffeeeeee),
+          foregroundStrokeWidth: 5,
+          animation: true,
+          child: Center(
+            child: ValueListenableBuilder(
+              valueListenable: _valueNotifier,
+              builder: (_, double value, __) => Text(
+                '${value.toInt()}%',
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15),
               ),
             ),
           ),
-        ]));
+        ));
   }
 }
