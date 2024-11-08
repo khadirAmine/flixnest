@@ -69,6 +69,7 @@ class AppTheme {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
       primaryColor: const Color.fromARGB(255, 91, 151, 255),
       shadowColor: const Color.fromARGB(137, 108, 101, 101),
+      splashColor: const Color.fromARGB(255, 91, 151, 255),
       colorScheme: const ColorScheme.light(
         tertiary: Color.fromARGB(96, 42, 42, 42),
         secondary: Color.fromARGB(255, 250, 182, 92),
@@ -76,8 +77,10 @@ class AppTheme {
 
   //* dark Theme
   final ThemeData darkTheme = ThemeData(
-      useMaterial3: true,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.grey,
-      ));
+    useMaterial3: true,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.grey,
+    ),
+    splashColor: const Color.fromARGB(255, 91, 151, 255),
+  );
 }

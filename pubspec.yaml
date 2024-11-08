@@ -43,6 +43,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   dashed_circular_progress_bar: ^0.0.6
   shared_preferences: ^2.3.2
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:
