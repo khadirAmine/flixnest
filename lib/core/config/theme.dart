@@ -65,13 +65,23 @@ class AppTheme {
       useMaterial3: true,
       scaffoldBackgroundColor: Colors.white,
       drawerTheme: DrawerThemeData(),
+
+      //< App Bar Theme
       appBarTheme: AppBarTheme(
-          backgroundColor: const Color.fromARGB(255, 91, 151, 255),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+        backgroundColor: const Color.fromARGB(255, 91, 151, 255),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shadowColor: Colors.black,
+        elevation: 6,
+        scrolledUnderElevation: 300,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      //>
+
       primaryColor: const Color.fromARGB(255, 91, 151, 255),
       shadowColor: const Color.fromARGB(137, 108, 101, 101),
       splashColor: const Color.fromARGB(255, 91, 151, 255),
+
+      // colorScheme
       colorScheme: const ColorScheme.light(
         tertiary: Color.fromARGB(96, 42, 42, 42),
         secondary: Color.fromARGB(255, 250, 182, 92),
