@@ -32,7 +32,7 @@ class SplashScreen extends StatelessWidget {
                   children: [
                     ClipRRect(
                         child: Image.asset(
-                      Assets.logo,
+                      Assets().images.logo,
                     )),
                     SpinKitDualRing(
                       color: AppTheme().instance.theme.colorScheme.secondary,

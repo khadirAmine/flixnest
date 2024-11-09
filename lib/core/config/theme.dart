@@ -92,11 +92,16 @@ class AppTheme {
       shadowColor: const Color.fromARGB(137, 108, 101, 101),
       //>
 
+      //< TextTheme
+      textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.black)),
+      //>
+
       // colorScheme
       colorScheme: const ColorScheme.light(
         tertiary: Color.fromARGB(96, 42, 42, 42),
         secondary: Color.fromARGB(255, 250, 182, 92),
         outline: Colors.black,
+        secondaryContainer: Color.fromARGB(255, 100, 100, 100),
       ));
 
   //* dark Theme

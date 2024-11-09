@@ -69,7 +69,7 @@ class _ItemCardState extends State<ItemCard> {
         },
         errorBuilder: (context, error, stackTrace) {
           return Image.asset(
-            Assets.errorImage,
+            Assets().images.errorImage,
             fit: BoxFit.fill,
           );
         },
