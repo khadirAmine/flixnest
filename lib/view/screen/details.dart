@@ -20,20 +20,21 @@ class Details extends StatelessWidget {
                     if (snapshot.hasData) {
                       return DetailsBody(
                           model: ItemDetailsModel(
-                        title: snapshot.data?['title'],
-                        imageUrl: snapshot.data?['imageUrl'],
-                        year: snapshot.data?['year'],
-                        arabicName: snapshot.data?['arabicName'],
-                        quality: snapshot.data?['quality'],
-                        type: snapshot.data?['type'],
-                        alsoKnownAs: snapshot.data?['alsoKnownAs'],
-                        classification: snapshot.data?['classification'],
-                        duration: snapshot.data?['duration'],
-                        storyMovie: snapshot.data?['storyMovie'],
-                        iframe: snapshot.data?['iframe'],
-                        seasions: snapshot.data?['seasions'],
-                        episodes: snapshot.data?['episodes'],
-                        isFilm: snapshot.data?['isFilm'],
+                        title: snapshot.data?['body']['title'],
+                        imageUrl: snapshot.data?['body']['imageUrl'],
+                        year: snapshot.data?['body']['year'],
+                        arabicName: snapshot.data?['body']['arabicName'],
+                        quality: snapshot.data?['body']['quality'],
+                        type: snapshot.data?['body']['type'],
+                        alsoKnownAs: snapshot.data?['body']['alsoKnownAs'],
+                        classification: snapshot.data?['body']
+                            ['classification'],
+                        duration: snapshot.data?['body']['duration'],
+                        storyMovie: snapshot.data?['body']['storyMovie'],
+                        iframe: snapshot.data?['body']['iframe'],
+                        seasions: snapshot.data?['body']['seasions'],
+                        episodes: snapshot.data?['body']['episodes'],
+                        isFilm: snapshot.data?['body']['isFilm'],
                       ));
                     }
                     return const Center(child: CircularProgressIndicator());

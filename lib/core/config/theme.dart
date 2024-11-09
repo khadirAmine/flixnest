@@ -63,6 +63,8 @@ class AppTheme {
 //* light Theme
   final ThemeData lightTheme = ThemeData(
       useMaterial3: true,
+      scaffoldBackgroundColor: Colors.white,
+      drawerTheme: DrawerThemeData(),
       appBarTheme: AppBarTheme(
           backgroundColor: const Color.fromARGB(255, 91, 151, 255),
           shape:

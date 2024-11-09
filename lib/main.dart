@@ -26,7 +26,10 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme().instance.darkTheme,
       initialRoute: Routes.splashScreen,
       getPages: [
-        GetPage(name: Routes.splashScreen, page: () => SplashScreen()),
+        GetPage(
+          name: Routes.splashScreen,
+          page: () => SplashScreen(),
+        ),
         GetPage(name: Routes.home, page: () => Home()),
         GetPage(name: Routes.details, page: () => Details()),
       ],

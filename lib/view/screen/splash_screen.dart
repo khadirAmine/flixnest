@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
 import '../../controller/home_controller.dart';
@@ -10,7 +7,6 @@ import '../../core/config/assets.dart';
 import '../../core/config/routes.dart';
 import '../../core/config/theme.dart';
 import '../../core/service/scrapping_service.dart';
-import '../../core/utils/methodes.dart';
 
 class SplashScreen extends StatelessWidget {
   SplashScreen({super.key});
@@ -53,20 +49,8 @@ class SplashScreenController extends GetxController {
   @override
   void onReady() async {
     HomeController homeController = Get.put(HomeController());
-    if (await checkConnection()) {
-      try {
-        http.Response? response = await ScrappingService.getItems();
-        final data = jsonDecode(response.body);
-        homeController.items = data;
-      } catch (e) {
-        logger('Error : $e');
-        //TODO: show Error Dialog
-      }
-    } else {
-      logger('Error Connection');
-      //TODO: show ConnectionFiled dialog
-    }
-
+    Map<String, dynamic> data = await ScrappingService.getItems();
+    homeController.itemsData = data;
     Get.offAllNamed(Routes.home);
     super.onReady();
   }

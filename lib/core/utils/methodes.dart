@@ -13,7 +13,7 @@ Future initServices() async {
   await AppTheme.initTheme();
 }
 
-Future<bool> checkConnection() async {
+Future<bool> checkConnectionStatus() async {
   InternetConnectionStatus connectionStatus =
       await InternetConnectionChecker().connectionStatus;
   return connectionStatus == InternetConnectionStatus.connected ? true : false;
