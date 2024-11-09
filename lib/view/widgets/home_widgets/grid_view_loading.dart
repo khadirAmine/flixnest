@@ -5,7 +5,7 @@ class GridViewLoading {
   static builder({
     int? itemCount,
     required Widget Function(int index) itemBuilder,
-    required void Function() onEnd,
+    required Future<void> Function() onEnd,
   }) =>
       GridViewBuilder(
           itemCount: itemCount, itemBuilder: itemBuilder, onEnd: onEnd);
@@ -20,7 +20,7 @@ class GridViewBuilder extends StatefulWidget {
   });
   final int? itemCount;
   final Widget Function(int index) itemBuilder;
-  final void Function() onEnd;
+  final Future<void> Function() onEnd;
 
   @override
   State<GridViewBuilder> createState() => _GridViewBuilderState();
@@ -29,20 +29,12 @@ class GridViewBuilder extends StatefulWidget {
 class _GridViewBuilderState extends State<GridViewBuilder> {
   ScrollController controller = ScrollController();
   RxBool showLoading = RxBool(false);
-  bool onEndIsCalled = false;
 
   @override
   void initState() {
     controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
-        showLoading.value = true;
-      } else {
-        showLoading.value = false;
-        onEndIsCalled = false;
-      }
-      if (showLoading.value && onEndIsCalled == false) {
-        widget.onEnd.call();
-        onEndIsCalled = true;
+        await _loadingMore();
       }
     });
 
@@ -82,5 +74,11 @@ class _GridViewBuilderState extends State<GridViewBuilder> {
             : const SizedBox(),
       )
     ]);
+  }
+
+  Future<void> _loadingMore() async {
+    showLoading.value = true;
+    await widget.onEnd.call();
+    showLoading.value = false;
   }
 }

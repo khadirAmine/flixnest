@@ -48,7 +48,7 @@ class Home extends StatelessWidget {
                     if (await checkConnection()) {
                       http.Response newItems = await ScrappingService.getItems(
                           newItems: true, pageNum: controller.pageNum);
-                      controller.items = jsonDecode(newItems.body);
+                      controller.items.addAll(jsonDecode(newItems.body));
                       controller.update();
                     } else {
                       //TODO: show error connectionDialog
