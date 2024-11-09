@@ -1,3 +1,5 @@
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+
 import '../config/app_config.dart';
 import '../config/theme.dart';
 
@@ -9,4 +11,10 @@ logger(String? message) {
 Future initServices() async {
   await AppConfig.init();
   await AppTheme.initTheme();
+}
+
+Future<bool> checkConnection() async {
+  InternetConnectionStatus connectionStatus =
+      await InternetConnectionChecker().connectionStatus;
+  return connectionStatus == InternetConnectionStatus.connected ? true : false;
 }

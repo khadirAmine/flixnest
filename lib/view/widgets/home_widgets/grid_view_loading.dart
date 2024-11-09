@@ -29,13 +29,20 @@ class GridViewBuilder extends StatefulWidget {
 class _GridViewBuilderState extends State<GridViewBuilder> {
   ScrollController controller = ScrollController();
   RxBool showLoading = RxBool(false);
+  bool onEndIsCalled = false;
 
   @override
   void initState() {
-    controller.addListener(() {
+    controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
         showLoading.value = true;
+      } else {
+        showLoading.value = false;
+        onEndIsCalled = false;
+      }
+      if (showLoading.value && onEndIsCalled == false) {
         widget.onEnd.call();
+        onEndIsCalled = true;
       }
     });
 

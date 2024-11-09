@@ -13,6 +13,7 @@ class ItemDetailsModel {
     required this.iframe,
     required this.seasions,
     required this.episodes,
+    required this.isFilm,
   });
   String? title;
   String? imageUrl;
@@ -27,4 +28,5 @@ class ItemDetailsModel {
   String? iframe;
   List? seasions;
   List? episodes;
+  bool? isFilm;
 }

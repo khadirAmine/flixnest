@@ -1,10 +1,14 @@
-import 'package:flixnest/core/service/scrapping_service.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 import '../../controller/home_controller.dart';
 import '../../core/config/routes.dart';
 import '../../core/config/theme.dart';
+import '../../core/service/scrapping_service.dart';
+import '../../core/utils/methodes.dart';
 import '../../data/models/item_model.dart';
 import '../widgets/home_widgets/grid_view_loading.dart';
 import '../widgets/home_widgets/item_card.dart';
@@ -24,39 +28,52 @@ class Home extends StatelessWidget {
                 title: IconButton(
                     icon: const Icon(Icons.radio_button_checked),
                     onPressed: () async {
-                      controller.pageNum++;
-                      await ScrappingService.getItems(
-                          newItems: true, pageNum: controller.pageNum);
+                      // controller.pageNum++;
+                      // await ScrappingService.getItems(
+                      //     newItems: true, pageNum: controller.pageNum);
+                      List<Map<String, dynamic>> data = [];
+                      data.add({
+                        'title': 'title',
+                        'imageUrl': 'imageUrl',
+                        'episode': 'episode',
+                        'year': 'year',
+                        'href': 'href'
+                      });
                     }),
-                actions: [
-                  Switch(
-                      value: switchValue,
-                      onChanged: (value) {
-                        switchValue = !switchValue;
-                        AppTheme().instance.changeThemeMode(
-                            value ? ThemeMode.light : ThemeMode.dark,
-                            getxController: controller);
-                      }),
-                ],
               ),
               body: GridViewLoading.builder(
                 onEnd: () async {
                   controller.pageNum++;
-                  List<ItemModel>? newItems = await ScrappingService.getItems(
-                      newItems: true, pageNum: controller.pageNum);
-                  controller.items?.addAll(newItems ?? []);
-                  newItems == null ? null : controller.update();
+                  try {
+                    if (await checkConnection()) {
+                      http.Response newItems = await ScrappingService.getItems(
+                          newItems: true, pageNum: controller.pageNum);
+                      controller.items = jsonDecode(newItems.body);
+                      controller.update();
+                    } else {
+                      //TODO: show error connectionDialog
+                    }
+                  } catch (e) {
+                    //TODO: show errorDialog
+                  }
                 },
                 itemBuilder: (i) {
                   return ItemCard(
                     onTap: () {
                       Get.toNamed(Routes.details,
-                          arguments: {'href': controller.items?[i].href});
+                          arguments: {'href': controller.items[i]['href']});
                     },
-                    model: controller.items?[i],
+                    model: ItemModel(
+                      title: controller.items[i]['title'],
+                      imageUrl: controller.items[i]['imageUrl'],
+                      episode: controller.items[i]['episode'],
+                      year: controller.items[i]['year'],
+                      href: controller.items[i]['href'],
+                      isFilm: controller.items[i]['isFilm'],
+                    ),
                   );
                 },
-                itemCount: controller.items?.length,
+                itemCount: controller.items.length,
               ),
             ));
   }

@@ -5,6 +5,7 @@ class ItemModel {
     required this.episode,
     required this.year,
     required this.href,
+    required this.isFilm,
   });
 
   String? title;
@@ -12,6 +13,7 @@ class ItemModel {
   String? episode;
   String? year;
   String? href;
+  bool? isFilm;
 
   Map<String, dynamic> toMap() {
     return {
@@ -19,7 +21,8 @@ class ItemModel {
       'imageUrl': imageUrl,
       'episode': episode,
       'year': year,
-      'href': href
+      'href': href,
+      'isFilm': isFilm
     };
   }
 }

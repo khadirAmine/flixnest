@@ -64,7 +64,7 @@ class AppTheme {
   final ThemeData lightTheme = ThemeData(
       useMaterial3: true,
       appBarTheme: AppBarTheme(
-          backgroundColor: Colors.green,
+          backgroundColor: const Color.fromARGB(255, 91, 151, 255),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
       primaryColor: const Color.fromARGB(255, 91, 151, 255),
