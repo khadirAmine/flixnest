@@ -64,7 +64,7 @@ class AppTheme {
   final ThemeData lightTheme = ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: Colors.white,
-      drawerTheme: DrawerThemeData(),
+      drawerTheme: const DrawerThemeData(),
 
       //< App Bar Theme
       appBarTheme: AppBarTheme(
@@ -77,14 +77,26 @@ class AppTheme {
       ),
       //>
 
+      //< IconButtonTheme
+      iconButtonTheme: const IconButtonThemeData(
+          style: ButtonStyle(
+              shadowColor: WidgetStatePropertyAll(Colors.black),
+              elevation: WidgetStatePropertyAll(5),
+              iconColor: WidgetStatePropertyAll(Colors.black),
+              backgroundColor:
+                  WidgetStatePropertyAll(Color.fromARGB(255, 216, 216, 216)))),
+      //>
+
+      //< AppColors
       primaryColor: const Color.fromARGB(255, 91, 151, 255),
       shadowColor: const Color.fromARGB(137, 108, 101, 101),
-      splashColor: const Color.fromARGB(255, 91, 151, 255),
+      //>
 
       // colorScheme
       colorScheme: const ColorScheme.light(
         tertiary: Color.fromARGB(96, 42, 42, 42),
         secondary: Color.fromARGB(255, 250, 182, 92),
+        outline: Colors.black,
       ));
 
   //* dark Theme

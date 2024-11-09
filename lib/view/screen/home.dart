@@ -8,6 +8,7 @@ import '../../core/service/scrapping_service.dart';
 import '../../data/models/item_model.dart';
 import '../widgets/home_widgets/grid_view_loading.dart';
 import '../widgets/home_widgets/home_drawer.dart';
+import '../widgets/home_widgets/home_search_bar.dart';
 import '../widgets/home_widgets/item_card.dart';
 
 class Home extends StatelessWidget {
@@ -19,20 +20,15 @@ class Home extends StatelessWidget {
     return Scaffold(
         key: scaffoldState,
         appBar: AppBar(
-          iconTheme: _appTheme.theme.appBarTheme.iconTheme,
-          shadowColor: _appTheme.instance.theme.appBarTheme.shadowColor,
-          elevation: _appTheme.instance.theme.appBarTheme.elevation,
-          backgroundColor: _appTheme.instance.theme.primaryColor,
-          scrolledUnderElevation:
-              _appTheme.theme.appBarTheme.scrolledUnderElevation,
           leading: IconButton(
               icon: const Icon(Icons.menu),
               onPressed: () {
                 scaffoldState.currentState?.openDrawer();
               }),
           automaticallyImplyLeading: false,
+          title: HomeSearchBar(),
         ),
-        drawer: HomeDrawer(),
+        drawer: const HomeDrawer(),
         backgroundColor: _appTheme.theme.scaffoldBackgroundColor,
         body: GetBuilder<HomeController>(
             init: HomeController(),
@@ -69,7 +65,7 @@ class Home extends StatelessWidget {
                       ),
                     );
                   },
-                  itemCount: controller.itemsData!['body'].length,
+                  itemCount: controller.itemsData?['body']?.length,
                 )));
   }
 }
