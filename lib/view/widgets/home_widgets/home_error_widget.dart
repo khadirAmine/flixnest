@@ -5,9 +5,10 @@ import 'package:get/get.dart';
 import '../../../core/config/assets.dart';
 import '../../../core/config/theme.dart';
 
-class NoWifiWidget extends StatelessWidget {
-  NoWifiWidget({super.key, this.onTapRetry});
+class HomeErrorWidget extends StatelessWidget {
+  HomeErrorWidget({super.key, required this.statusCode, this.onTapRetry});
   final AppTheme _appTheme = AppTheme().instance;
+  final int statusCode;
   final void Function()? onTapRetry;
   @override
   Widget build(BuildContext context) {
@@ -17,14 +18,14 @@ class NoWifiWidget extends StatelessWidget {
           child: Column(
             children: [
               SvgPicture.asset(
-                Assets().svgs.noWifi,
+                Assets().svgs.error,
                 width: Get.width * 0.3,
                 colorFilter: ColorFilter.mode(
                     _appTheme.theme.colorScheme.secondaryContainer,
                     BlendMode.srcIn),
               ),
-              const Text('لا يتوفر اتصال بالانترنت',
-                  style: TextStyle(
+              Text('خطأ : $statusCode',
+                  style: const TextStyle(
                     fontSize: 20,
                   )),
               InkWell(

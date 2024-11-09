@@ -21,6 +21,13 @@ class ScrappingService {
       Response? response = await HttpService.getRequest(newItems == true
           ? '${AppConfig().instance.baseUrl}/page/$pageNum/'
           : AppConfig().instance.baseUrl);
+      data.addAll({'statusCode': response.statusCode});
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        data.addAll({
+          'error': {'status': true, 'body': response.body}
+        });
+        return data;
+      }
       String html = response.body;
       BeautifulSoup bs = BeautifulSoup(html);
       List<Bs4Element>? items = bs
@@ -88,6 +95,13 @@ class ScrappingService {
         return data;
       }
       Response? response = await HttpService.getRequest(href);
+      data.addAll({'statusCode': response.statusCode});
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        data.addAll({
+          'error': {'status': true, 'body': response.body}
+        });
+        return data;
+      }
       String html = response.body;
       BeautifulSoup bs = BeautifulSoup(html);
       String? title = bs
