@@ -36,7 +36,7 @@ class SplashScreen extends StatelessWidget {
                     )),
                     SpinKitDualRing(
                       color: AppTheme().instance.theme.colorScheme.secondary,
-                      size: 60.0,
+                      size: ((Get.width + Get.height) / 2) * 0.1,
                     ),
                   ],
                 )),

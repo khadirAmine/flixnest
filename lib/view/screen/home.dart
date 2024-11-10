@@ -43,7 +43,7 @@ class Home extends StatelessWidget {
       return Center(
           child: SpinKitDualRing(
         color: AppTheme().instance.theme.colorScheme.secondary,
-        size: 60.0,
+        size: ((Get.width + Get.height) / 2) * 0.06,
       ));
     } else if (controller.itemsData?['connectionStatus'] == false) {
       return NoWifiWidget(onTapRetry: () async {

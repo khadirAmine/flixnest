@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+
+import '../../../core/config/theme.dart';
 
 class GridViewLoading {
   static builder({
@@ -68,7 +71,10 @@ class _GridViewBuilderState extends State<GridViewBuilder> {
                 SizedBox(height: Get.height * 0.025),
                 Container(
                     alignment: Alignment.center,
-                    child: const CircularProgressIndicator()),
+                    child: SpinKitDualRing(
+                      color: AppTheme().instance.theme.colorScheme.secondary,
+                      size: ((Get.width + Get.height) / 2) * 0.06,
+                    )),
                 SizedBox(height: Get.height * 0.015),
               ])
             : const SizedBox(),
