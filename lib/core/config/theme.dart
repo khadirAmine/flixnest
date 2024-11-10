@@ -102,6 +102,7 @@ class AppTheme {
         secondary: Color.fromARGB(255, 250, 182, 92),
         outline: Colors.black,
         secondaryContainer: Color.fromARGB(255, 100, 100, 100),
+        tertiaryContainer: Colors.white,
       ));
 
   //* dark Theme

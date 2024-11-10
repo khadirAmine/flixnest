@@ -47,35 +47,27 @@ class Home extends StatelessWidget {
       ));
     } else if (controller.itemsData?['connectionStatus'] == false) {
       return NoWifiWidget(onTapRetry: () async {
-        controller.isLoading = true;
-        controller.update();
-        controller.itemsData = await ScrappingService.getItems();
-        controller.isLoading = false;
-        controller.update();
+        await controller.reTry();
       });
     } else if (controller.itemsData?['error']['status']) {
       return HomeErrorWidget(
-          statusCode: controller.itemsData?['statusCode'],
+          statusCode: controller.itemsData!['statusCode'],
           onTapRetry: () async {
-            controller.isLoading = true;
-            controller.update();
-            controller.itemsData = await ScrappingService.getItems();
-            controller.isLoading = false;
-            controller.update();
+            await controller.reTry();
           });
     } else {
       return GridViewLoading.builder(
         onEnd: () async {
-          controller.pageNum++;
           Map<String, dynamic> newItemsData = await ScrappingService.getItems(
-              newItems: true, pageNum: controller.pageNum);
+              newItems: true, pageNum: controller.pageNum + 1);
           if (newItemsData['connectionStatus'] == false) {
-            //TODO: show connections filed
-          } else if (newItemsData['error']['status'] == true) {
-            //TODO: show error details
+            _internitSnackBar();
+          } else if (newItemsData['error']['status']) {
+            _errorSnackBar(newItemsData['statusCode']);
           } else {
             controller.itemsData!['body'].addAll(newItemsData['body']);
             controller.update();
+            controller.pageNum++;
           }
         },
         itemBuilder: (i) {
@@ -99,4 +91,21 @@ class Home extends StatelessWidget {
       );
     }
   }
+
+  SnackbarController _internitSnackBar() => Get.showSnackbar(GetSnackBar(
+        duration: const Duration(seconds: 3),
+        message: 'تحقق من الانترنت وحاول مرة اخرة',
+        borderRadius: 10,
+        icon: Icon(Icons.wifi_off,
+            color: _appTheme.theme.colorScheme.tertiaryContainer),
+      ));
+
+  SnackbarController _errorSnackBar(int statusCode) =>
+      Get.showSnackbar(GetSnackBar(
+        duration: const Duration(seconds: 3),
+        message: 'حدث خطأ : $statusCode',
+        borderRadius: 10,
+        icon: Icon(Icons.error_outline,
+            color: _appTheme.theme.colorScheme.tertiaryContainer),
+      ));
 }

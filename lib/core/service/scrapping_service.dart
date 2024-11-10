@@ -76,6 +76,7 @@ class ScrappingService {
       });
     } catch (e) {
       data.addAll({
+        'statusCode': e.hashCode,
         'error': {'status': true, 'body': e}
       });
     }
@@ -201,6 +202,7 @@ class ScrappingService {
       });
     } catch (e) {
       data['body'].addAll({
+        'statusCode': e.hashCode,
         'error': {'status': true, 'body': e}
       });
     }
