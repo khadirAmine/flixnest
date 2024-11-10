@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 import '../../controller/home_controller.dart';
@@ -38,11 +39,30 @@ class Home extends StatelessWidget {
   }
 
   Widget _buildBody(HomeController controller) {
-    if (controller.itemsData?['connectionStatus'] == false) {
-      return NoWifiWidget(onTapRetry: () {});
+    if (controller.isLoading) {
+      return Center(
+          child: SpinKitDualRing(
+        color: AppTheme().instance.theme.colorScheme.secondary,
+        size: 60.0,
+      ));
+    } else if (controller.itemsData?['connectionStatus'] == false) {
+      return NoWifiWidget(onTapRetry: () async {
+        controller.isLoading = true;
+        controller.update();
+        controller.itemsData = await ScrappingService.getItems();
+        controller.isLoading = false;
+        controller.update();
+      });
     } else if (controller.itemsData?['error']['status']) {
       return HomeErrorWidget(
-          statusCode: controller.itemsData?['statusCode'], onTapRetry: () {});
+          statusCode: controller.itemsData?['statusCode'],
+          onTapRetry: () async {
+            controller.isLoading = true;
+            controller.update();
+            controller.itemsData = await ScrappingService.getItems();
+            controller.isLoading = false;
+            controller.update();
+          });
     } else {
       return GridViewLoading.builder(
         onEnd: () async {
