@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import '../../../core/config/assets.dart';
 import '../../../core/config/theme.dart';
 
-class HomeErrorWidget extends StatelessWidget {
-  HomeErrorWidget({super.key, required this.statusCode, this.onTapRetry});
+class ErrorBodyWidget extends StatelessWidget {
+  ErrorBodyWidget({super.key, required this.statusCode, this.onTapRetry});
   final AppTheme _appTheme = AppTheme().instance;
   final int statusCode;
   final void Function()? onTapRetry;

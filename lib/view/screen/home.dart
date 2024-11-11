@@ -9,10 +9,10 @@ import '../../core/service/scrapping_service.dart';
 import '../../data/models/item_model.dart';
 import '../widgets/home_widgets/grid_view_loading.dart';
 import '../widgets/home_widgets/home_drawer.dart';
-import '../widgets/home_widgets/home_error_widget.dart';
+import '../widgets/shared/error_widget.dart';
 import '../widgets/home_widgets/home_search_bar.dart';
 import '../widgets/home_widgets/item_card.dart';
-import '../widgets/home_widgets/no_wifi_widget.dart';
+import '../widgets/shared/no_wifi_widget.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -29,7 +29,9 @@ class Home extends StatelessWidget {
                 scaffoldState.currentState?.openDrawer();
               }),
           automaticallyImplyLeading: false,
-          title: const HomeSearchBar(),
+          title: const HomeSearchBar(
+            category: 'انيمي وكارتون',
+          ),
         ),
         drawer: const HomeDrawer(),
         backgroundColor: _appTheme.theme.scaffoldBackgroundColor,
@@ -50,7 +52,7 @@ class Home extends StatelessWidget {
         await controller.reTry();
       });
     } else if (controller.itemsData?['error']['status']) {
-      return HomeErrorWidget(
+      return ErrorBodyWidget(
           statusCode: controller.itemsData!['statusCode'],
           onTapRetry: () async {
             await controller.reTry();

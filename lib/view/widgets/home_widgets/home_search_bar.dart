@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import '../../../core/config/theme.dart';
 
 class HomeSearchBar extends StatefulWidget {
-  const HomeSearchBar({super.key});
-
+  const HomeSearchBar({super.key, required this.category});
+  final String category;
   @override
   State<HomeSearchBar> createState() => _HomeSearchBarState();
 }
@@ -32,9 +32,10 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
       children: [
         AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          width: _isIcon ? Get.width * 0.11 : Get.width * 0.7,
+          width: _isIcon ? Get.width * 0.78 : Get.width * 0.7,
           height: _isIcon ? Get.height * 0.05 : Get.height * 0.045,
-          child: _isIcon ? _buildSearchIcon() : _buildTextField(),
+          child:
+              _isIcon ? _buildSearchIcon(widget.category) : _buildTextField(),
         ),
       ],
     );
@@ -70,13 +71,71 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
         ),
       );
 
-  Widget _buildSearchIcon() => IconButton(
-        icon: const Icon(Icons.search),
-        onPressed: () {
-          _isIcon = false;
-          setState(() {});
-          _focusNode.requestFocus();
-        },
-        iconSize: ((Get.width + Get.height) / 2) * 0.045,
-      );
+  Widget _buildSearchIcon(String category) => Row(children: [
+        InkWell(
+          onTap: () {
+            showMenu(
+                context: context,
+                position: RelativeRect.fromDirectional(
+                  textDirection: TextDirection.rtl,
+                  start: 70,
+                  end: 90,
+                  top: 0,
+                  bottom: 0,
+                ),
+                color: _appTheme.theme.colorScheme.secondary,
+                useRootNavigator: true,
+                items: const [
+                  PopupMenuItem(
+                    child: Column(
+                      children: [
+                        Text('اخر الافلام'),
+                        Divider(),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    child: Column(
+                      children: [Text('اخر الحلقات'), Divider()],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    child: Column(
+                      children: [Text('اخر الحلقات'), Divider()],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    child: Column(
+                      children: [
+                        Text('اخر الافلام'),
+                        Divider(),
+                      ],
+                    ),
+                  )
+                ]);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+                color: _appTheme.theme.colorScheme.secondary,
+                borderRadius: BorderRadius.circular(5)),
+            child: const Row(children: [
+              Text('التصنيف ', style: TextStyle(fontSize: 19)),
+              Icon(Icons.keyboard_arrow_down)
+            ]),
+          ),
+        ),
+        SizedBox(width: Get.width * 0.14),
+        Text(category, style: const TextStyle(fontSize: 20)),
+        SizedBox(width: Get.width * 0.05),
+        IconButton(
+          icon: const Icon(Icons.search),
+          onPressed: () {
+            _isIcon = false;
+            setState(() {});
+            _focusNode.requestFocus();
+          },
+          iconSize: ((Get.width + Get.height) / 2) * 0.045,
+        ),
+      ]);
 }
