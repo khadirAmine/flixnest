@@ -73,59 +73,55 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
       );
 
   Widget _buildSearchIcon(String category) => Row(children: [
-        InkWell(
-          onTap: () async {
-            await ScrappingService.getCollections();
-            // showMenu(
-            //     context: context,
-            //     position: RelativeRect.fromDirectional(
-            //       textDirection: TextDirection.rtl,
-            //       start: 70,
-            //       end: 90,
-            //       top: 0,
-            //       bottom: 0,
-            //     ),
-            //     color: _appTheme.theme.colorScheme.secondary,
-            //     useRootNavigator: true,
-            //     items: const [
-            //       PopupMenuItem(
-            //         child: Column(
-            //           children: [
-            //             Text('اخر الافلام'),
-            //             Divider(),
-            //           ],
-            //         ),
-            //       ),
-            //       PopupMenuItem(
-            //         child: Column(
-            //           children: [Text('اخر الحلقات'), Divider()],
-            //         ),
-            //       ),
-            //       PopupMenuItem(
-            //         child: Column(
-            //           children: [Text('اخر الحلقات'), Divider()],
-            //         ),
-            //       ),
-            //       PopupMenuItem(
-            //         child: Column(
-            //           children: [
-            //             Text('اخر الافلام'),
-            //             Divider(),
-            //           ],
-            //         ),
-            //       )
-            //     ]);
+        FutureBuilder<Map>(
+          future: ScrappingService.getCollections(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return InkWell(
+                onTap: () async {
+                  showMenu(
+                      context: context,
+                      position: RelativeRect.fromDirectional(
+                        textDirection: TextDirection.rtl,
+                        start: 70,
+                        end: 90,
+                        top: 0,
+                        bottom: 0,
+                      ),
+                      color: _appTheme.theme.colorScheme.secondary,
+                      useRootNavigator: true,
+                      items: List.generate(
+                          snapshot.data?['body'].length,
+                          (i) => PopupMenuItem(
+                                onTap: () {
+                                  print(snapshot.data?['body'][i]['href']);
+                                },
+                                child: Column(children: [
+                                  Text(snapshot.data?['body'][i]['name']),
+                                  const Divider()
+                                ]),
+                              )));
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                      color: _appTheme.theme.colorScheme.secondary,
+                      borderRadius: BorderRadius.circular(5),
+                      boxShadow: [
+                        BoxShadow(
+                            color: _appTheme.theme.shadowColor,
+                            offset: const Offset(0, 1.5)),
+                      ]),
+                  child: const Row(children: [
+                    Text('التصنيف ', style: TextStyle(fontSize: 19)),
+                    Icon(Icons.keyboard_arrow_down)
+                  ]),
+                ),
+              );
+            } else {
+              return SizedBox(width: Get.width * 0.22);
+            }
           },
-          child: Container(
-            padding: const EdgeInsets.all(3),
-            decoration: BoxDecoration(
-                color: _appTheme.theme.colorScheme.secondary,
-                borderRadius: BorderRadius.circular(5)),
-            child: const Row(children: [
-              Text('التصنيف ', style: TextStyle(fontSize: 19)),
-              Icon(Icons.keyboard_arrow_down)
-            ]),
-          ),
         ),
         SizedBox(width: Get.width * 0.14),
         Text(category, style: const TextStyle(fontSize: 20)),
