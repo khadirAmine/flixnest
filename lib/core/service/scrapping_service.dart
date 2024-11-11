@@ -6,6 +6,46 @@ import '../utils/methodes.dart';
 import 'http_service.dart';
 
 class ScrappingService {
+//* get Collections
+  static Future<Map<String, dynamic>> getCollections() async {
+    logger('start scrapping');
+    Map<String, dynamic> data = {};
+    try {
+      if (await checkConnectionStatus()) {
+        data.addAll({'connectionStatus': true, 'body': []});
+      } else {
+        data.addAll({'connectionStatus': false});
+        return data;
+      }
+      Response response =
+          await HttpService.getRequest(AppConfig().instance.baseUrl);
+      data.addAll({'statusCode': response.statusCode});
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        data.addAll({
+          'error': {'status': true, 'body': response.body}
+        });
+        return data;
+      }
+      String html = response.body;
+      BeautifulSoup bs = BeautifulSoup(html);
+      List<Bs4Element>? collections =
+          bs.find('div', class_: 'list--Tabsui')?.findAll('a');
+      collections?.forEach((element) {
+        String? href = element.attributes['href'];
+        String? name = element.text;
+        data['body'].add({'href': href, 'name': name});
+      });
+      return data;
+    } catch (e) {
+      data.addAll({
+        'statusCode': e.hashCode,
+        'error': {'status': true, 'body': e}
+      });
+    }
+    logger('finish scrapping');
+    return {};
+  }
+
   //* get Items
   static Future<Map<String, dynamic>> getItems(
       {bool? newItems, int? pageNum}) async {
@@ -18,7 +58,7 @@ class ScrappingService {
         data.addAll({'connectionStatus': false});
         return data;
       }
-      Response? response = await HttpService.getRequest(newItems == true
+      Response response = await HttpService.getRequest(newItems == true
           ? '${AppConfig().instance.baseUrl}/page/$pageNum/'
           : AppConfig().instance.baseUrl);
       data.addAll({'statusCode': response.statusCode});
@@ -33,44 +73,44 @@ class ScrappingService {
       List<Bs4Element>? items = bs
           .find('div', class_: 'Grid--WecimaPosts')
           ?.findAll('div', class_: 'Thumb--GridItem');
-      if (items != null) {
-        for (var item in items) {
-          String? href = item.find('a')?.attributes['href'];
-          String? title = item.find('a')?.attributes['title'];
-          String? year = item.find('span', class_: 'year')?.text.trim();
-          //< get Image Url
-          RegExp regExp = RegExp(r'url\(([^)]+)\)');
-          String? getImageUrl = item
-              .find('span', class_: 'BG--GridItem')
-              ?.attributes['data-lazy-style'];
-          Match? match = regExp.firstMatch(getImageUrl ?? '');
-          String? imageUrl = match?.group(1);
-          //>
-          String? episode = item
-              .find('div', class_: 'Episode--number')
-              ?.find('span')
-              ?.text
-              .trim();
-          if (episode != null) {
-            data['body'].add({
-              'title': title,
-              'imageUrl': imageUrl,
-              'episode': episode,
-              'year': year,
-              'href': href,
-              'isFilm': false,
-            });
-          } else {
-            data['body'].add({
-              'title': title,
-              'imageUrl': imageUrl,
-              'year': year,
-              'href': href,
-              'isFilm': true,
-            });
-          }
+
+      items?.forEach((item) {
+        String? href = item.find('a')?.attributes['href'];
+        String? title = item.find('a')?.attributes['title'];
+        String? year = item.find('span', class_: 'year')?.text.trim();
+        //< get Image Url
+        RegExp regExp = RegExp(r'url\(([^)]+)\)');
+        String? getImageUrl = item
+            .find('span', class_: 'BG--GridItem')
+            ?.attributes['data-lazy-style'];
+        Match? match = regExp.firstMatch(getImageUrl ?? '');
+        String? imageUrl = match?.group(1);
+        //>
+        String? episode = item
+            .find('div', class_: 'Episode--number')
+            ?.find('span')
+            ?.text
+            .trim();
+        if (episode != null) {
+          data['body'].add({
+            'title': title,
+            'imageUrl': imageUrl,
+            'episode': episode,
+            'year': year,
+            'href': href,
+            'isFilm': false,
+          });
+        } else {
+          data['body'].add({
+            'title': title,
+            'imageUrl': imageUrl,
+            'year': year,
+            'href': href,
+            'isFilm': true,
+          });
         }
-      }
+      });
+
       data.addAll({
         'error': {'status': false}
       });
@@ -130,9 +170,9 @@ class ScrappingService {
           bs.find('ul', class_: 'Terms--Content--Single-begin')?.findAll('li');
       List<Bs4Element> detailsList = [];
       Map<String?, String?> m = {};
-      for (var detail in allDetails!) {
+      allDetails?.forEach((detail) {
         detailsList.add(detail);
-      }
+      });
       for (int i = 0; i < detailsList.length; i++) {
         m.addAll({
           detailsList[i].find('span')?.text:

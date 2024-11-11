@@ -1,3 +1,4 @@
+import 'package:flixnest/core/service/scrapping_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -73,46 +74,47 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
 
   Widget _buildSearchIcon(String category) => Row(children: [
         InkWell(
-          onTap: () {
-            showMenu(
-                context: context,
-                position: RelativeRect.fromDirectional(
-                  textDirection: TextDirection.rtl,
-                  start: 70,
-                  end: 90,
-                  top: 0,
-                  bottom: 0,
-                ),
-                color: _appTheme.theme.colorScheme.secondary,
-                useRootNavigator: true,
-                items: const [
-                  PopupMenuItem(
-                    child: Column(
-                      children: [
-                        Text('اخر الافلام'),
-                        Divider(),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    child: Column(
-                      children: [Text('اخر الحلقات'), Divider()],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    child: Column(
-                      children: [Text('اخر الحلقات'), Divider()],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    child: Column(
-                      children: [
-                        Text('اخر الافلام'),
-                        Divider(),
-                      ],
-                    ),
-                  )
-                ]);
+          onTap: () async {
+            await ScrappingService.getCollections();
+            // showMenu(
+            //     context: context,
+            //     position: RelativeRect.fromDirectional(
+            //       textDirection: TextDirection.rtl,
+            //       start: 70,
+            //       end: 90,
+            //       top: 0,
+            //       bottom: 0,
+            //     ),
+            //     color: _appTheme.theme.colorScheme.secondary,
+            //     useRootNavigator: true,
+            //     items: const [
+            //       PopupMenuItem(
+            //         child: Column(
+            //           children: [
+            //             Text('اخر الافلام'),
+            //             Divider(),
+            //           ],
+            //         ),
+            //       ),
+            //       PopupMenuItem(
+            //         child: Column(
+            //           children: [Text('اخر الحلقات'), Divider()],
+            //         ),
+            //       ),
+            //       PopupMenuItem(
+            //         child: Column(
+            //           children: [Text('اخر الحلقات'), Divider()],
+            //         ),
+            //       ),
+            //       PopupMenuItem(
+            //         child: Column(
+            //           children: [
+            //             Text('اخر الافلام'),
+            //             Divider(),
+            //           ],
+            //         ),
+            //       )
+            //     ]);
           },
           child: Container(
             padding: const EdgeInsets.all(3),
