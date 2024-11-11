@@ -4,14 +4,14 @@ import '../core/service/scrapping_service.dart';
 
 class HomeController extends GetxController {
   int pageNum = 1;
-  Map<String, dynamic>? itemsData;
+  Map<String, dynamic> itemsData = {};
   bool isLoading = false;
 
   Future reTry() async {
     isLoading = true;
-    update();
+    update(['homeBody', 'homeSearchBar']);
     itemsData = await ScrappingService.getItems();
     isLoading = false;
-    update();
+    update(['homeBody', 'homeSearchBar']);
   }
 }

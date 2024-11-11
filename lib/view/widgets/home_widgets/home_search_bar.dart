@@ -2,16 +2,22 @@ import 'package:flixnest/core/service/scrapping_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../controller/home_controller.dart';
+import '../../../core/config/app_config.dart';
 import '../../../core/config/theme.dart';
 
-class HomeSearchBar extends StatefulWidget {
-  const HomeSearchBar({super.key, required this.category});
-  final String category;
-  @override
-  State<HomeSearchBar> createState() => _HomeSearchBarState();
-}
+// class HomeSearchBar extends StatefulWidget {
+//   const HomeSearchBar({super.key, required this.category});
+//   final String category;
+//   @override
+//   State<HomeSearchBar> createState() => _HomeSearchBarState();
+// }
 
-class _HomeSearchBarState extends State<HomeSearchBar> {
+class HomeSearchBar extends StatelessWidget {
+  HomeSearchBar({super.key, required this.category});
+
+  final String category;
+
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _editingController = TextEditingController();
 
@@ -19,27 +25,34 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
 
   bool _isIcon = true;
 
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    _editingController.dispose();
-    super.dispose();
-  }
+  final String url = AppConfig().instance.baseUrl;
+
+  final HomeController _homeController = Get.put(HomeController());
+
+  // @override
+  // void dispose() {
+  //   _focusNode.dispose();
+  //   _editingController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          width: _isIcon ? Get.width * 0.78 : Get.width * 0.7,
-          height: _isIcon ? Get.height * 0.05 : Get.height * 0.045,
-          child:
-              _isIcon ? _buildSearchIcon(widget.category) : _buildTextField(),
-        ),
-      ],
-    );
+    return GetBuilder<HomeController>(
+        init: HomeController(),
+        id: 'homeSearchBar',
+        builder: (controller) => Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: _isIcon ? Get.width * 0.78 : Get.width * 0.7,
+                  height: _isIcon ? Get.height * 0.05 : Get.height * 0.045,
+                  child:
+                      _isIcon ? _buildSearchIcon(category) : _buildTextField(),
+                ),
+              ],
+            ));
   }
 
   Widget _buildTextField() => TextField(
@@ -49,13 +62,13 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
           _focusNode.unfocus();
           _isIcon = true;
           _editingController.clear();
-          setState(() {});
+          _homeController.update(['homeSearchBar']);
         },
         onSubmitted: (value) {
           _focusNode.unfocus();
           _isIcon = true;
           _editingController.clear();
-          setState(() {});
+          _homeController.update(['homeSearchBar']);
         },
         cursorColor: _appTheme.theme.primaryColor,
         textAlign: TextAlign.center,
@@ -90,17 +103,37 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
                       ),
                       color: _appTheme.theme.colorScheme.secondary,
                       useRootNavigator: true,
-                      items: List.generate(
-                          snapshot.data?['body'].length,
-                          (i) => PopupMenuItem(
-                                onTap: () {
-                                  print(snapshot.data?['body'][i]['href']);
-                                },
-                                child: Column(children: [
-                                  Text(snapshot.data?['body'][i]['name']),
-                                  const Divider()
-                                ]),
-                              )));
+                      items: [
+                        PopupMenuItem(
+                          onTap: () async {
+                            _homeController.isLoading = true;
+                            _homeController
+                                .update(['homeBody', 'homeSearchBar']);
+                            _homeController.pageNum = 1;
+                            ScrappingService().instance.getByCollection = false;
+                            ScrappingService().instance.baseUrl =
+                                AppConfig().instance.baseUrl;
+                            _homeController.itemsData =
+                                await ScrappingService.getItems();
+                            _homeController.isLoading = false;
+                            _homeController
+                                .update(['homeBody', 'homeSearchBar']);
+                          },
+                          child:
+                              const Column(children: [Text('الكل'), Divider()]),
+                        ),
+                        ...List.generate(
+                            snapshot.data?['body'].length,
+                            (i) => PopupMenuItem(
+                                  onTap: () async {
+                                    await _getItemsByCollection(snapshot, i);
+                                  },
+                                  child: Column(children: [
+                                    Text(snapshot.data?['body'][i]['name']),
+                                    const Divider()
+                                  ]),
+                                ))
+                      ]);
                 },
                 child: Container(
                   padding: const EdgeInsets.all(3),
@@ -130,10 +163,21 @@ class _HomeSearchBarState extends State<HomeSearchBar> {
           icon: const Icon(Icons.search),
           onPressed: () {
             _isIcon = false;
-            setState(() {});
+            _homeController.update(['homeSearchBar']);
             _focusNode.requestFocus();
           },
           iconSize: ((Get.width + Get.height) / 2) * 0.045,
         ),
       ]);
+
+  Future<void> _getItemsByCollection(AsyncSnapshot snapshot, int index) async {
+    _homeController.isLoading = true;
+    _homeController.update(['homeBody', 'homeSearchBar']);
+    _homeController.pageNum = 1;
+    ScrappingService().instance.getByCollection = true;
+    ScrappingService().instance.baseUrl = snapshot.data?['body'][index]['href'];
+    _homeController.itemsData = await ScrappingService.getItems();
+    _homeController.isLoading = false;
+    _homeController.update(['homeBody', 'homeSearchBar']);
+  }
 }

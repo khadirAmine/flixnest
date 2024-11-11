@@ -29,7 +29,7 @@ class Home extends StatelessWidget {
                 scaffoldState.currentState?.openDrawer();
               }),
           automaticallyImplyLeading: false,
-          title: const HomeSearchBar(
+          title: HomeSearchBar(
             category: 'انيمي وكارتون',
           ),
         ),
@@ -37,6 +37,7 @@ class Home extends StatelessWidget {
         backgroundColor: _appTheme.theme.scaffoldBackgroundColor,
         body: GetBuilder<HomeController>(
             init: HomeController(),
+            id: 'homeBody',
             builder: (controller) => _buildBody(controller)));
   }
 
@@ -47,13 +48,13 @@ class Home extends StatelessWidget {
         color: AppTheme().instance.theme.colorScheme.secondary,
         size: ((Get.width + Get.height) / 2) * 0.06,
       ));
-    } else if (controller.itemsData?['connectionStatus'] == false) {
+    } else if (controller.itemsData['connectionStatus'] == false) {
       return NoWifiWidget(onTapRetry: () async {
         await controller.reTry();
       });
-    } else if (controller.itemsData?['error']['status']) {
+    } else if (controller.itemsData['error']?['status'] == true) {
       return ErrorBodyWidget(
-          statusCode: controller.itemsData!['statusCode'],
+          statusCode: controller.itemsData['statusCode'],
           onTapRetry: () async {
             await controller.reTry();
           });
@@ -61,35 +62,36 @@ class Home extends StatelessWidget {
       return GridViewLoading.builder(
         onEnd: () async {
           Map<String, dynamic> newItemsData = await ScrappingService.getItems(
-              newItems: true, pageNum: controller.pageNum + 1);
-          if (newItemsData['connectionStatus'] == false) {
+            newItems: true,
+            pageNum: controller.pageNum + 1,
+          );
+          if (newItemsData['connectionStatus']) {
             _internitSnackBar();
           } else if (newItemsData['error']['status']) {
             _errorSnackBar(newItemsData['statusCode']);
           } else {
-            controller.itemsData!['body'].addAll(newItemsData['body']);
-            controller.update();
+            controller.itemsData['body'].addAll(newItemsData['body']);
+            controller.update(['homeBody']);
             controller.pageNum++;
           }
         },
         itemBuilder: (i) {
           return ItemCard(
             onTap: () {
-              Get.toNamed(Routes.details, arguments: {
-                'href': controller.itemsData!['body'][i]['href']
-              });
+              Get.toNamed(Routes.details,
+                  arguments: {'href': controller.itemsData['body'][i]['href']});
             },
             model: ItemModel(
-              title: controller.itemsData!['body'][i]['title'],
-              imageUrl: controller.itemsData!['body'][i]['imageUrl'],
-              episode: controller.itemsData!['body'][i]['episode'],
-              year: controller.itemsData!['body'][i]['year'],
-              href: controller.itemsData!['body'][i]['href'],
-              isFilm: controller.itemsData!['body'][i]['isFilm'],
+              title: controller.itemsData['body'].elementAt(i)['title'],
+              imageUrl: controller.itemsData['body'].elementAt(i)['imageUrl'],
+              episode: controller.itemsData['body'].elementAt(i)['episode'],
+              year: controller.itemsData['body'].elementAt(i)['year'],
+              href: controller.itemsData['body'].elementAt(i)['href'],
+              isFilm: controller.itemsData['body'].elementAt(i)['isFilm'],
             ),
           );
         },
-        itemCount: controller.itemsData?['body']?.length,
+        itemCount: controller.itemsData['body']?.length,
       );
     }
   }

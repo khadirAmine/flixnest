@@ -6,6 +6,11 @@ import '../utils/methodes.dart';
 import 'http_service.dart';
 
 class ScrappingService {
+  static final ScrappingService _instance = ScrappingService();
+  ScrappingService get instance => _instance;
+  bool getByCollection = false;
+  String baseUrl = AppConfig().instance.baseUrl;
+
 //* get Collections
   static Future<Map<String, dynamic>> getCollections() async {
     logger('start scrapping');
@@ -17,8 +22,7 @@ class ScrappingService {
         data.addAll({'connectionStatus': false});
         return data;
       }
-      Response response =
-          await HttpService.getRequest(AppConfig().instance.baseUrl);
+      Response response = await HttpService.getRequest(_instance.baseUrl);
       data.addAll({'statusCode': response.statusCode});
       if (response.statusCode != 200 && response.statusCode != 201) {
         data.addAll({
@@ -35,15 +39,16 @@ class ScrappingService {
         String? name = element.text;
         data['body'].add({'href': href, 'name': name});
       });
+      logger('finish scrapping');
       return data;
     } catch (e) {
+      logger('finish scrapping');
       data.addAll({
         'statusCode': e.hashCode,
         'error': {'status': true, 'body': e}
       });
+      return data;
     }
-    logger('finish scrapping');
-    return {};
   }
 
   //* get Items
@@ -53,14 +58,17 @@ class ScrappingService {
     Map<String, dynamic> data = {};
     try {
       if (await checkConnectionStatus()) {
-        data.addAll({'connectionStatus': true, 'body': []});
+        data.addAll({'connectionStatus': true, 'body': <dynamic>{}});
       } else {
         data.addAll({'connectionStatus': false});
         return data;
       }
-      Response response = await HttpService.getRequest(newItems == true
-          ? '${AppConfig().instance.baseUrl}/page/$pageNum/'
-          : AppConfig().instance.baseUrl);
+      String apiUrl = newItems == true
+          ? (_instance.getByCollection == false
+              ? '${_instance.baseUrl}/page/$pageNum/'
+              : '${_instance.baseUrl}?page_no=$pageNum')
+          : _instance.baseUrl;
+      Response response = await HttpService.getRequest(apiUrl);
       data.addAll({'statusCode': response.statusCode});
       if (response.statusCode != 200 && response.statusCode != 201) {
         data.addAll({
