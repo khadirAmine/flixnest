@@ -6,13 +6,7 @@ import '../../../controller/home_controller.dart';
 import '../../../core/config/app_config.dart';
 import '../../../core/config/theme.dart';
 
-// class HomeSearchBar extends StatefulWidget {
-//   const HomeSearchBar({super.key, required this.category});
-//   final String category;
-//   @override
-//   State<HomeSearchBar> createState() => _HomeSearchBarState();
-// }
-
+// ignore: must_be_immutable
 class HomeSearchBar extends StatelessWidget {
   HomeSearchBar({super.key, required this.category});
 
@@ -27,14 +21,7 @@ class HomeSearchBar extends StatelessWidget {
 
   final String url = AppConfig().instance.baseUrl;
 
-  final HomeController _homeController = Get.put(HomeController());
-
-  // @override
-  // void dispose() {
-  //   _focusNode.dispose();
-  //   _editingController.dispose();
-  //   super.dispose();
-  // }
+  final HomeController _homeController = Get.find();
 
   @override
   Widget build(BuildContext context) {
