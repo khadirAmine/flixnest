@@ -29,16 +29,12 @@ class Home extends StatelessWidget {
                 scaffoldState.currentState?.openDrawer();
               }),
           automaticallyImplyLeading: false,
-          title: HomeSearchBar(
-            category: 'انيمي وكارتون',
-          ),
+          title: HomeSearchBar(),
         ),
         drawer: const HomeDrawer(),
         backgroundColor: _appTheme.theme.scaffoldBackgroundColor,
         body: GetBuilder<HomeController>(
-            init: HomeController(),
-            id: 'homeBody',
-            builder: (controller) => _buildBody(controller)));
+            id: 'homeBody', builder: (controller) => _buildBody(controller)));
   }
 
   Widget _buildBody(HomeController controller) {
@@ -65,7 +61,7 @@ class Home extends StatelessWidget {
             newItems: true,
             pageNum: controller.pageNum + 1,
           );
-          if (newItemsData['connectionStatus']) {
+          if (newItemsData['connectionStatus'] == false) {
             _internitSnackBar();
           } else if (newItemsData['error']['status']) {
             _errorSnackBar(newItemsData['statusCode']);

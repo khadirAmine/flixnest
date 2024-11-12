@@ -39,16 +39,19 @@ class ScrappingService {
         String? name = element.text;
         data['body'].add({'href': href, 'name': name});
       });
-      logger('finish scrapping');
-      return data;
+      data.addAll({
+        'error': {'status': false}
+      });
     } catch (e) {
       logger('finish scrapping');
       data.addAll({
         'statusCode': e.hashCode,
         'error': {'status': true, 'body': e}
       });
-      return data;
     }
+
+    logger('finish scrapping');
+    return data;
   }
 
   //* get Items

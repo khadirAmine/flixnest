@@ -6,6 +6,7 @@ class HomeController extends GetxController {
   int pageNum = 1;
   Map<String, dynamic> itemsData = {};
   bool isLoading = false;
+  String title = 'الكل';
 
   Future reTry() async {
     isLoading = true;
