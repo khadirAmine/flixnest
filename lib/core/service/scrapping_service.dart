@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart';
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
 
@@ -10,67 +12,30 @@ class ScrappingService {
   ScrappingService get instance => _instance;
   bool getByCollection = false;
   String baseUrl = AppConfig().instance.baseUrl;
-
-//* get Collections
-  static Future<Map<String, dynamic>> getCollections() async {
-    logger('start scrapping');
-    Map<String, dynamic> data = {};
-    try {
-      if (await checkConnectionStatus()) {
-        data.addAll({'connectionStatus': true, 'body': []});
-      } else {
-        data.addAll({'connectionStatus': false});
-        return data;
-      }
-      Response response = await HttpService.getRequest(_instance.baseUrl);
-      data.addAll({'statusCode': response.statusCode});
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        data.addAll({
-          'error': {'status': true, 'body': response.body}
-        });
-        return data;
-      }
-      String html = response.body;
-      BeautifulSoup bs = BeautifulSoup(html);
-      List<Bs4Element>? collections =
-          bs.find('div', class_: 'list--Tabsui')?.findAll('a');
-      collections?.forEach((element) {
-        String? href = element.attributes['href'];
-        String? name = element.text;
-        data['body'].add({'href': href, 'name': name});
-      });
-      data.addAll({
-        'error': {'status': false}
-      });
-    } catch (e) {
-      logger('finish scrapping');
-      data.addAll({
-        'statusCode': e.hashCode,
-        'error': {'status': true, 'body': e}
-      });
-    }
-
-    logger('finish scrapping');
-    return data;
-  }
+  bool isSearch = false;
 
   //* get Items
   static Future<Map<String, dynamic>> getItems(
-      {bool? newItems, int? pageNum}) async {
+      {bool? newItems, int? pageNum, word}) async {
     logger('start scrapping');
     Map<String, dynamic> data = {};
     try {
       if (await checkConnectionStatus()) {
-        data.addAll({'connectionStatus': true, 'body': <dynamic>{}});
+        data.addAll({
+          'connectionStatus': true,
+          'body': {'collections': <dynamic>{}, 'items': <dynamic>{}}
+        });
       } else {
         data.addAll({'connectionStatus': false});
         return data;
       }
-      String apiUrl = newItems == true
-          ? (_instance.getByCollection == false
-              ? '${_instance.baseUrl}/page/$pageNum/'
-              : '${_instance.baseUrl}?page_no=$pageNum')
-          : _instance.baseUrl;
+      String apiUrl = _instance.isSearch == false
+          ? (newItems == true
+              ? (_instance.getByCollection == false
+                  ? '${_instance.baseUrl}/page/$pageNum/'
+                  : '${_instance.baseUrl}?page_no=$pageNum')
+              : _instance.baseUrl)
+          : '${AppConfig().instance.baseUrl}/AjaxCenter/Searching/$word';
       Response response = await HttpService.getRequest(apiUrl);
       data.addAll({'statusCode': response.statusCode});
       if (response.statusCode != 200 && response.statusCode != 201) {
@@ -80,7 +45,8 @@ class ScrappingService {
         return data;
       }
       String html = response.body;
-      BeautifulSoup bs = BeautifulSoup(html);
+      BeautifulSoup bs = BeautifulSoup(
+          _instance.isSearch == false ? html : jsonDecode(html)['output']);
       List<Bs4Element>? items = bs
           .find('div', class_: 'Grid--WecimaPosts')
           ?.findAll('div', class_: 'Thumb--GridItem');
@@ -103,7 +69,7 @@ class ScrappingService {
             ?.text
             .trim();
         if (episode != null) {
-          data['body'].add({
+          data['body']['items'].add({
             'title': title,
             'imageUrl': imageUrl,
             'episode': episode,
@@ -112,7 +78,7 @@ class ScrappingService {
             'isFilm': false,
           });
         } else {
-          data['body'].add({
+          data['body']['items'].add({
             'title': title,
             'imageUrl': imageUrl,
             'year': year,
@@ -121,7 +87,15 @@ class ScrappingService {
           });
         }
       });
-
+      //< get Collections
+      List<Bs4Element>? collections =
+          bs.find('div', class_: 'list--Tabsui')?.findAll('a');
+      collections?.forEach((element) {
+        String? href = element.attributes['href'];
+        String? name = element.text;
+        data['body']['collections'].add({'href': href, 'name': name});
+      });
+      //>
       data.addAll({
         'error': {'status': false}
       });
@@ -248,11 +222,11 @@ class ScrappingService {
         data['body'].addAll({'episodes': episodes, 'isFilm': true});
       }
       //>
-      data['body'].addAll({
+      data.addAll({
         'error': {'status': false}
       });
     } catch (e) {
-      data['body'].addAll({
+      data.addAll({
         'statusCode': e.hashCode,
         'error': {'status': true, 'body': e}
       });
