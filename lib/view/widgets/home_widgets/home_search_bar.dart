@@ -96,7 +96,6 @@ class HomeSearchBar extends StatelessWidget {
             _isIcon = false;
             _homeController.update(['homeSearchBar']);
             _focusNode.requestFocus();
-
             ScrappingService().instance.isSearch = true;
           },
           iconSize: ((Get.width + Get.height) / 2) * 0.045,
@@ -132,6 +131,7 @@ class HomeSearchBar extends StatelessWidget {
                           AppConfig().instance.baseUrl;
                       _homeController.itemsData =
                           await ScrappingService.getItems();
+
                       _homeController.isLoading = false;
                       _homeController.update(['homeBody', 'homeSearchBar']);
                     },

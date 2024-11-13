@@ -47,6 +47,7 @@ class ScrappingService {
       String html = response.body;
       BeautifulSoup bs = BeautifulSoup(
           _instance.isSearch == false ? html : jsonDecode(html)['output']);
+
       List<Bs4Element>? items = bs
           .find('div', class_: 'Grid--WecimaPosts')
           ?.findAll('div', class_: 'Thumb--GridItem');
