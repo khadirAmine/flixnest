@@ -49,7 +49,7 @@ class SplashScreenController extends GetxController {
   @override
   void onReady() async {
     HomeController homeController = Get.put(HomeController());
-    Map<String, dynamic> data = await ScrappingService.getItems();
+    Map<String, dynamic> data = await ScrappingService.getItems(false);
     homeController.itemsData = data;
     Get.offAllNamed(Routes.home);
     super.onReady();

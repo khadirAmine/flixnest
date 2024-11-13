@@ -58,6 +58,7 @@ class Home extends StatelessWidget {
       return GridViewLoading.builder(
         onEnd: () async {
           Map<String, dynamic> newItemsData = await ScrappingService.getItems(
+            false,
             newItems: true,
             pageNum: controller.pageNum + 1,
           );
@@ -66,7 +67,8 @@ class Home extends StatelessWidget {
           } else if (newItemsData['error']['status']) {
             _errorSnackBar(newItemsData['statusCode']);
           } else {
-            controller.itemsData['body'].addAll(newItemsData['body']);
+            controller.itemsData['body']['items']
+                .addAll(newItemsData['body']['items']);
             controller.update(['homeBody']);
             controller.pageNum++;
           }
@@ -74,20 +76,26 @@ class Home extends StatelessWidget {
         itemBuilder: (i) {
           return ItemCard(
             onTap: () {
-              Get.toNamed(Routes.details,
-                  arguments: {'href': controller.itemsData['body'][i]['href']});
+              Get.toNamed(Routes.details, arguments: {
+                'href':
+                    controller.itemsData['body']['items'].elementAt(i)['href']
+              });
             },
             model: ItemModel(
-              title: controller.itemsData['body'].elementAt(i)['title'],
-              imageUrl: controller.itemsData['body'].elementAt(i)['imageUrl'],
-              episode: controller.itemsData['body'].elementAt(i)['episode'],
-              year: controller.itemsData['body'].elementAt(i)['year'],
-              href: controller.itemsData['body'].elementAt(i)['href'],
-              isFilm: controller.itemsData['body'].elementAt(i)['isFilm'],
+              title:
+                  controller.itemsData['body']['items'].elementAt(i)['title'],
+              imageUrl: controller.itemsData['body']['items']
+                  .elementAt(i)['imageUrl'],
+              episode:
+                  controller.itemsData['body']['items'].elementAt(i)['episode'],
+              year: controller.itemsData['body']['items'].elementAt(i)['year'],
+              href: controller.itemsData['body']['items'].elementAt(i)['href'],
+              isFilm:
+                  controller.itemsData['body']['items'].elementAt(i)['isFilm'],
             ),
           );
         },
-        itemCount: controller.itemsData['body']?.length,
+        itemCount: controller.itemsData['body']['items']?.length,
       );
     }
   }

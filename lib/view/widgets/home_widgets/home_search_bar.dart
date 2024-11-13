@@ -30,8 +30,8 @@ class HomeSearchBar extends StatelessWidget {
               children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  width: _isIcon ? Get.width * 0.78 : Get.width * 0.7,
-                  height: _isIcon ? Get.height * 0.05 : Get.height * 0.045,
+                  width: _isIcon ? Get.width * 0.78 : Get.width * 0.78,
+                  height: _isIcon ? Get.height * 0.05 : Get.height * 0.05,
                   child: _isIcon ? _buildSearchIcon() : _buildTextField(),
                 ),
               ],
@@ -41,6 +41,14 @@ class HomeSearchBar extends StatelessWidget {
   Widget _buildTextField() => TextField(
         controller: _editingController,
         focusNode: _focusNode,
+        onChanged: (value) async {
+          _homeController.isLoading = true;
+          _homeController.update(['homeBody']);
+          _homeController.itemsData =
+              await ScrappingService.getItems(true, word: value);
+          _homeController.isLoading = false;
+          _homeController.update(['homeBody', 'homeSearchBar']);
+        },
         onTapOutside: (event) {
           _focusNode.unfocus();
           _isIcon = true;
@@ -56,7 +64,18 @@ class HomeSearchBar extends StatelessWidget {
         cursorColor: _appTheme.theme.primaryColor,
         textAlign: TextAlign.center,
         decoration: InputDecoration(
+          suffixIcon: SizedBox(
+            width: Get.width * 0.25,
+            child: _buildPopupMenu(
+                secondary: const SizedBox(),
+                color: Colors.transparent,
+                boxShadow: []),
+          ),
           focusedBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: _appTheme.theme.colorScheme.outline),
+              borderRadius: BorderRadius.circular(2000)),
+          border: OutlineInputBorder(
               borderSide:
                   BorderSide(color: _appTheme.theme.colorScheme.outline),
               borderRadius: BorderRadius.circular(2000)),
@@ -69,24 +88,7 @@ class HomeSearchBar extends StatelessWidget {
       );
 
   Widget _buildSearchIcon() => Row(children: [
-        FutureBuilder<Map>(
-          future: ScrappingService.getCollections(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              if (snapshot.data?['connectionStatus']) {
-                if (snapshot.data?['error']['status'] == false) {
-                  return _buildPopupMenu(context, snapshot);
-                } else {
-                  return SizedBox(width: Get.width * 0.22);
-                }
-              } else {
-                return SizedBox(width: Get.width * 0.22);
-              }
-            } else {
-              return SizedBox(width: Get.width * 0.22);
-            }
-          },
-        ),
+        _buildPopupMenu(),
         Container(
             alignment: Alignment.centerLeft,
             width: Get.width * 0.36,
@@ -104,74 +106,89 @@ class HomeSearchBar extends StatelessWidget {
         ),
       ]);
 
-  Widget _buildPopupMenu(BuildContext context, AsyncSnapshot snapshot) =>
-      InkWell(
-        onTap: () async {
-          showMenu(
-              context: context,
-              position: RelativeRect.fromDirectional(
-                textDirection: TextDirection.rtl,
-                start: 70,
-                end: 90,
-                top: 0,
-                bottom: 0,
-              ),
-              color: _appTheme.theme.colorScheme.secondary,
-              useRootNavigator: true,
-              items: [
-                PopupMenuItem(
-                  onTap: () async {
-                    _homeController.title = 'الكل';
-                    _homeController.isLoading = true;
-                    _homeController.update(['homeBody', 'homeSearchBar']);
-                    _homeController.pageNum = 1;
-                    ScrappingService().instance.getByCollection = false;
-                    ScrappingService().instance.baseUrl =
-                        AppConfig().instance.baseUrl;
-                    _homeController.itemsData =
-                        await ScrappingService.getItems();
-                    _homeController.isLoading = false;
-                    _homeController.update(['homeBody', 'homeSearchBar']);
-                  },
-                  child: const Column(children: [Text('الكل'), Divider()]),
+  Widget _buildPopupMenu(
+      {Widget? secondary, Color? color, List<BoxShadow>? boxShadow}) {
+    if (_homeController.itemsData['connectionStatus']) {
+      if (_homeController.itemsData['error']['status'] == false) {
+        return InkWell(
+          onTap: () async {
+            showMenu(
+                context: Get.context!,
+                position: RelativeRect.fromDirectional(
+                  textDirection: TextDirection.rtl,
+                  start: 70,
+                  end: 90,
+                  top: 0,
+                  bottom: 0,
                 ),
-                ...List.generate(
-                    snapshot.data?['body'].length,
-                    (i) => PopupMenuItem(
-                          onTap: () async {
-                            await _getItemsByCollection(snapshot, i);
-                          },
-                          child: Column(children: [
-                            Text(snapshot.data?['body'][i]['name']),
-                            const Divider()
-                          ]),
-                        ))
-              ]);
-        },
-        child: Container(
-          padding: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-              color: _appTheme.theme.colorScheme.secondary,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: [
-                BoxShadow(
-                    color: _appTheme.theme.shadowColor,
-                    offset: const Offset(0, 1.5)),
-              ]),
-          child: const Row(children: [
-            Text('التصنيف ', style: TextStyle(fontSize: 19)),
-            Icon(Icons.keyboard_arrow_down)
-          ]),
-        ),
-      );
-  Future<void> _getItemsByCollection(AsyncSnapshot snapshot, int index) async {
-    _homeController.title = snapshot.data?['body'][index]['name'];
+                color: _appTheme.theme.colorScheme.secondary,
+                useRootNavigator: true,
+                items: [
+                  PopupMenuItem(
+                    onTap: () async {
+                      _homeController.title = 'الكل';
+                      _homeController.isLoading = true;
+                      _homeController.update(['homeBody', 'homeSearchBar']);
+                      _homeController.pageNum = 1;
+                      ScrappingService().instance.getByCollection = false;
+                      ScrappingService().instance.baseUrl =
+                          AppConfig().instance.baseUrl;
+                      _homeController.itemsData =
+                          await ScrappingService.getItems(false);
+                      _homeController.isLoading = false;
+                      _homeController.update(['homeBody', 'homeSearchBar']);
+                    },
+                    child: const Column(children: [Text('الكل'), Divider()]),
+                  ),
+                  ...List.generate(
+                      _homeController.itemsData['body']['collections'].length,
+                      (i) => PopupMenuItem(
+                            onTap: () async {
+                              await _getItemsByCollection(i);
+                            },
+                            child: Column(children: [
+                              Text(_homeController.itemsData['body']
+                                      ['collections']
+                                  .elementAt(i)['name']),
+                              const Divider()
+                            ]),
+                          ))
+                ]);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+                color: color ?? _appTheme.theme.colorScheme.secondary,
+                borderRadius: BorderRadius.circular(5),
+                boxShadow: boxShadow ??
+                    [
+                      BoxShadow(
+                          color: _appTheme.theme.shadowColor,
+                          offset: const Offset(0, 1.5)),
+                    ]),
+            child: const Row(children: [
+              Text('التصنيف ', style: TextStyle(fontSize: 19)),
+              Icon(Icons.keyboard_arrow_down)
+            ]),
+          ),
+        );
+      }
+    }
+
+    return secondary ?? SizedBox(width: Get.width * 0.22);
+  }
+
+  Future<void> _getItemsByCollection(int index) async {
+    _homeController.title = _homeController.itemsData['body']['collections']
+        .elementAt(index)['name'];
     _homeController.isLoading = true;
     _homeController.update(['homeBody', 'homeSearchBar']);
     _homeController.pageNum = 1;
     ScrappingService().instance.getByCollection = true;
-    ScrappingService().instance.baseUrl = snapshot.data?['body'][index]['href'];
-    _homeController.itemsData = await ScrappingService.getItems();
+    ScrappingService().instance.baseUrl = _homeController.itemsData['body']
+            ['collections']
+        .elementAt(index)['href'];
+    _homeController.itemsData = await ScrappingService.getItems(false);
     _homeController.isLoading = false;
     _homeController.update(['homeBody', 'homeSearchBar']);
   }

@@ -11,7 +11,7 @@ class HomeController extends GetxController {
   Future reTry() async {
     isLoading = true;
     update(['homeBody', 'homeSearchBar']);
-    itemsData = await ScrappingService.getItems();
+    itemsData = await ScrappingService.getItems(false);
     isLoading = false;
     update(['homeBody', 'homeSearchBar']);
   }
