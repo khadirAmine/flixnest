@@ -19,8 +19,6 @@ class HomeSearchBar extends StatelessWidget {
 
   final String url = AppConfig().instance.baseUrl;
 
-  final HomeController _homeController = Get.find();
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
@@ -32,36 +30,37 @@ class HomeSearchBar extends StatelessWidget {
                   duration: const Duration(milliseconds: 200),
                   width: _isIcon ? Get.width * 0.78 : Get.width * 0.78,
                   height: _isIcon ? Get.height * 0.05 : Get.height * 0.05,
-                  child: _isIcon ? _buildSearchIcon() : _buildTextField(),
+                  child: _isIcon
+                      ? _buildSearchIcon(controller)
+                      : _buildTextField(controller),
                 ),
               ],
             ));
   }
 
-  Widget _buildTextField() => TextField(
+  Widget _buildTextField(HomeController controller) => TextField(
         controller: _editingController,
         focusNode: _focusNode,
         onChanged: (value) async {
-          _homeController.isLoading = true;
-          _homeController.update(['homeBody']);
-          _homeController.itemsData =
-              await ScrappingService.getItems(word: value);
-          _homeController.isLoading = false;
-          _homeController.update(['homeBody', 'homeSearchBar']);
+          controller.isLoading = true;
+          controller.update(['homeBody']);
+          controller.itemsData = await ScrappingService.getItems(word: value);
+          controller.isLoading = false;
+          controller.update(['homeBody', 'homeSearchBar']);
         },
         onSubmitted: (value) {
           ScrappingService().instance.isSearch = false;
           _focusNode.unfocus();
           _isIcon = true;
           _editingController.clear();
-          _homeController.update(['homeSearchBar']);
+          controller.update(['homeSearchBar']);
         },
         cursorColor: _appTheme.theme.primaryColor,
         textAlign: TextAlign.center,
         decoration: InputDecoration(
           suffixIcon: SizedBox(
             width: Get.width * 0.25,
-            child: _buildPopupMenu(
+            child: _buildPopupMenu(controller,
                 secondary: const SizedBox(),
                 color: Colors.transparent,
                 boxShadow: []),
@@ -82,19 +81,19 @@ class HomeSearchBar extends StatelessWidget {
         ),
       );
 
-  Widget _buildSearchIcon() => Row(children: [
-        _buildPopupMenu(),
+  Widget _buildSearchIcon(HomeController controller) => Row(children: [
+        _buildPopupMenu(controller),
         Container(
             alignment: Alignment.centerLeft,
             width: Get.width * 0.36,
-            child: Text(_homeController.title,
-                style: const TextStyle(fontSize: 20))),
+            child:
+                Text(controller.title, style: const TextStyle(fontSize: 20))),
         SizedBox(width: Get.width * 0.05),
         IconButton(
           icon: const Icon(Icons.search),
           onPressed: () {
             _isIcon = false;
-            _homeController.update(['homeSearchBar']);
+            controller.update(['homeSearchBar']);
             _focusNode.requestFocus();
             ScrappingService().instance.isSearch = true;
           },
@@ -102,10 +101,10 @@ class HomeSearchBar extends StatelessWidget {
         ),
       ]);
 
-  Widget _buildPopupMenu(
+  Widget _buildPopupMenu(HomeController controller,
       {Widget? secondary, Color? color, List<BoxShadow>? boxShadow}) {
-    if (_homeController.itemsData['connectionStatus']) {
-      if (_homeController.itemsData['error']['status'] == false) {
+    if (controller.itemsData['connectionStatus']) {
+      if (controller.itemsData['error']['status'] == false) {
         return InkWell(
           onTap: () async {
             showMenu(
@@ -122,30 +121,28 @@ class HomeSearchBar extends StatelessWidget {
                 items: [
                   PopupMenuItem(
                     onTap: () async {
-                      _homeController.title = 'الكل';
-                      _homeController.isLoading = true;
-                      _homeController.update(['homeBody', 'homeSearchBar']);
-                      _homeController.pageNum = 1;
+                      controller.title = 'الكل';
+                      controller.isLoading = true;
+                      controller.update(['homeBody', 'homeSearchBar']);
+                      controller.pageNum = 1;
                       ScrappingService().instance.getByCollection = false;
                       ScrappingService().instance.baseUrl =
                           AppConfig().instance.baseUrl;
-                      _homeController.itemsData =
-                          await ScrappingService.getItems();
+                      controller.itemsData = await ScrappingService.getItems();
 
-                      _homeController.isLoading = false;
-                      _homeController.update(['homeBody', 'homeSearchBar']);
+                      controller.isLoading = false;
+                      controller.update(['homeBody', 'homeSearchBar']);
                     },
                     child: const Column(children: [Text('الكل'), Divider()]),
                   ),
                   ...List.generate(
-                      _homeController.itemsData['body']['collections'].length,
+                      controller.itemsData['body']['collections'].length,
                       (i) => PopupMenuItem(
                             onTap: () async {
-                              await _getItemsByCollection(i);
+                              await _getItemsByCollection(controller, i);
                             },
                             child: Column(children: [
-                              Text(_homeController.itemsData['body']
-                                      ['collections']
+                              Text(controller.itemsData['body']['collections']
                                   .elementAt(i)['name']),
                               const Divider()
                             ]),
@@ -175,18 +172,18 @@ class HomeSearchBar extends StatelessWidget {
     return secondary ?? SizedBox(width: Get.width * 0.22);
   }
 
-  Future<void> _getItemsByCollection(int index) async {
-    _homeController.title = _homeController.itemsData['body']['collections']
-        .elementAt(index)['name'];
-    _homeController.isLoading = true;
-    _homeController.update(['homeBody', 'homeSearchBar']);
-    _homeController.pageNum = 1;
+  Future<void> _getItemsByCollection(
+      HomeController controller, int index) async {
+    controller.title =
+        controller.itemsData['body']['collections'].elementAt(index)['name'];
+    controller.isLoading = true;
+    controller.update(['homeBody', 'homeSearchBar']);
+    controller.pageNum = 1;
     ScrappingService().instance.getByCollection = true;
-    ScrappingService().instance.baseUrl = _homeController.itemsData['body']
-            ['collections']
-        .elementAt(index)['href'];
-    _homeController.itemsData = await ScrappingService.getItems();
-    _homeController.isLoading = false;
-    _homeController.update(['homeBody', 'homeSearchBar']);
+    ScrappingService().instance.baseUrl =
+        controller.itemsData['body']['collections'].elementAt(index)['href'];
+    controller.itemsData = await ScrappingService.getItems();
+    controller.isLoading = false;
+    controller.update(['homeBody', 'homeSearchBar']);
   }
 }

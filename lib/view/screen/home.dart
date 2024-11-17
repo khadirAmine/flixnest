@@ -25,13 +25,13 @@ class Home extends StatelessWidget {
         appBar: AppBar(
           leading: IconButton(
               icon: const Icon(Icons.menu),
-              onPressed: () {
+              onPressed: () async {
                 scaffoldState.currentState?.openDrawer();
               }),
           automaticallyImplyLeading: false,
           title: HomeSearchBar(),
         ),
-        drawer: const HomeDrawer(),
+        drawer: HomeDrawer(),
         backgroundColor: _appTheme.theme.scaffoldBackgroundColor,
         body: GetBuilder<HomeController>(
             id: 'homeBody', builder: (controller) => _buildBody(controller)));

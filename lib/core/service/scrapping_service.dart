@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart';
 import 'package:beautiful_soup_dart/beautiful_soup.dart';
 
@@ -230,6 +231,57 @@ class ScrappingService {
       data.addAll({
         'statusCode': e.hashCode,
         'error': {'status': true, 'body': e}
+      });
+    }
+    logger('finish scrapping');
+    return data;
+  }
+
+//* get Collections
+  static Future<Map<String, dynamic>> getCategorys(String? html,
+      {bool? hasError, WebResourceError? error}) async {
+    logger('start scrapping');
+    Map<String, dynamic> data = {};
+    try {
+      if (await checkConnectionStatus()) {
+        data.addAll({
+          'connectionStatus': true,
+          'body': {'categorys': <dynamic>{}}
+        });
+      } else {
+        data.addAll({'connectionStatus': false});
+        return data;
+      }
+      if (hasError == true) {
+        data.addAll({
+          'error': {'status': true, 'body': error.hashCode}
+        });
+        return data;
+      }
+
+      BeautifulSoup bs = BeautifulSoup(html ?? '');
+      List<Bs4Element>? categorys = bs
+          .find(
+            'ul',
+            class_: 'menu-userarea--rightbar',
+          )
+          ?.findAll('li');
+      categorys?.forEach((collection) {
+        String? name = collection.text;
+        String? href = collection.find('a')?.attributes['href'];
+        bool? isSellected = collection.className == 'selected';
+        data['body']['categorys'].add({
+          'name': name,
+          'href': href,
+          'isSellected': isSellected,
+        });
+      });
+      data.addAll({
+        'error': {'status': false}
+      });
+    } catch (e) {
+      data.addAll({
+        'error': {'status': true, 'body': e.hashCode}
       });
     }
     logger('finish scrapping');
