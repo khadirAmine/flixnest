@@ -31,7 +31,7 @@ class Home extends StatelessWidget {
           automaticallyImplyLeading: false,
           title: HomeSearchBar(),
         ),
-        drawer: HomeDrawer(),
+        drawer: const HomeDrawer(),
         backgroundColor: _appTheme.theme.scaffoldBackgroundColor,
         body: GetBuilder<HomeController>(
             id: 'homeBody', builder: (controller) => _buildBody(controller)));

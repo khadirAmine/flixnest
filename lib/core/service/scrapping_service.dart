@@ -254,7 +254,8 @@ class ScrappingService {
       }
       if (hasError == true) {
         data.addAll({
-          'error': {'status': true, 'body': error.hashCode}
+          'statusCode': error.hashCode,
+          'error': {'status': true, 'body': error?.description}
         });
         return data;
       }
@@ -281,7 +282,8 @@ class ScrappingService {
       });
     } catch (e) {
       data.addAll({
-        'error': {'status': true, 'body': e.hashCode}
+        'statusCode': e.hashCode,
+        'error': {'status': true, 'body': e}
       });
     }
     logger('finish scrapping');
