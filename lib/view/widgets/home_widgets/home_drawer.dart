@@ -10,98 +10,114 @@ import '../../../core/service/scrapping_service.dart';
 import '../shared/error_widget.dart';
 import '../shared/no_wifi_widget.dart';
 
-class HomeDrawer extends StatefulWidget {
-  const HomeDrawer({super.key});
+// ignore: must_be_immutable
+class HomeDrawer extends StatelessWidget {
+  HomeDrawer({super.key});
 
-  @override
-  State<HomeDrawer> createState() => _HomeDrawerState();
-}
+  bool isLoading = false;
 
-class _HomeDrawerState extends State<HomeDrawer> {
-  late final HomeController _homeController = Get.put(HomeController());
   InAppWebViewController? _webViewController;
+
   final ThemeData theme = AppTheme().instance.theme;
-  Map<String, dynamic> categorysData = {};
 
-  @override
-  void initState() {
-    _homeController.drawerIsLoading = true;
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _homeController.drawerIsLoading = false;
-    _webViewController = null;
-    _webViewController?.dispose();
-    super.dispose();
-  }
+  Map<String, dynamic>? categorysData = {};
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-        backgroundColor: AppTheme().instance.theme.colorScheme.secondary,
-        child: SingleChildScrollView(
-          physics: const NeverScrollableScrollPhysics(),
-          child: Column(children: [
-            SizedBox(
-              width: Get.width,
-              height: Get.height * 0.1,
-              child: Stack(
-                children: [
-                  _buildWebView(),
-                  Container(
-                      alignment: Alignment.center,
-                      color: theme.colorScheme.secondary,
-                      width: Get.width,
-                      height: Get.height * 0.1,
-                      child: Image.asset(Assets().images.logo))
-                ],
-              ),
-            ),
-            GetBuilder<HomeController>(
-                init: HomeController(),
-                id: 'drawer',
-                builder: (controller) => controller.drawerIsLoading
-                    ? _loadingWidget()
-                    : _buildDrawerBody())
-          ]),
-        ));
+    return GetBuilder<HomeController>(
+        initState: (state) {
+          isLoading = true;
+        },
+        dispose: (state) {
+          isLoading = false;
+          _webViewController = null;
+          _webViewController?.dispose();
+        },
+        builder: (controller) => Container(
+              width: Get.width * 0.7,
+              height: Get.height,
+              decoration: BoxDecoration(
+                  color: theme.colorScheme.secondary,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      bottomLeft: Radius.circular(15))),
+              child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  child: Column(children: [
+                    _buildHeader(controller),
+                    GetBuilder<HomeController>(
+                      id: 'drawerBody',
+                      builder: (bodyController) => isLoading
+                          ? _loadingWidget()
+                          : _buildBody(bodyController),
+                    )
+                  ])),
+            ));
   }
 
-  Widget _buildDrawerBody() {
-    return categorysData['connectionStatus'] == false
+  Widget _buildHeader(HomeController controller) => SizedBox(
+        width: Get.width,
+        height: Get.height * 0.1,
+        child: Stack(
+          children: [
+            _buildWebView(controller),
+            Container(
+                alignment: Alignment.center,
+                width: Get.width,
+                height: Get.height * 0.1,
+                decoration: BoxDecoration(
+                    color: theme.colorScheme.secondary,
+                    borderRadius:
+                        const BorderRadius.only(topLeft: Radius.circular(15))),
+                child: Image.asset(Assets().images.logo))
+          ],
+        ),
+      );
+
+  Widget _buildBody(HomeController controller) {
+    return categorysData?['connectionStatus'] == false
         ? SizedBox(
             height: Get.height,
             child: NoWifiWidget(
               onTapRetry: () async {
+                isLoading = true;
+                controller.update(['drawerBody']);
                 await _webViewController?.reload();
+                isLoading = false;
+                controller.update(['drawerBody']);
               },
             ),
           )
-        : categorysData['error']['status'] == true
+        : categorysData?['error']?['status'] == true
             ? SizedBox(
                 height: Get.height,
                 child: ErrorBodyWidget(
                   onTapRetry: () async {
+                    isLoading = true;
+                    controller.update(['drawerBody']);
                     await _webViewController?.reload();
+                    isLoading = false;
+                    controller.update(['drawerBody']);
                   },
-                  statusCode: categorysData['statusCode'],
+                  statusCode: categorysData?['statusCode'],
                 ))
             : Column(children: [
                 SizedBox(height: Get.height * 0.1),
                 ...List.generate(
-                    categorysData['body']['categorys'].length,
+                    categorysData?['body']?['categorys'].length ?? 0,
                     (i) => _buildButtonList(
-                        categorysData['body']['categorys'].elementAt(i)))
+                        categorysData?['body']['categorys'].elementAt(i),
+                        controller))
               ]);
   }
 
-  Widget _buildButtonList(Map<String, dynamic> items) => InkWell(
+  Widget _buildButtonList(
+          Map<String, dynamic> items, HomeController homeController) =>
+      InkWell(
         onTap: () async {
           Get.back();
           ScrappingService().instance.baseUrl = items['href'];
-          await _homeController.reTry();
+          await homeController.reTry();
         },
         child: Container(
           padding: EdgeInsets.only(right: Get.width * 0.05),
@@ -119,43 +135,41 @@ class _HomeDrawerState extends State<HomeDrawer> {
         ),
       );
 
-  Widget _buildWebView() => GetBuilder<HomeController>(
-      id: 'drawerWebView',
-      builder: (controller) => InAppWebView(
-            initialUrlRequest:
-                URLRequest(url: WebUri(ScrappingService().instance.baseUrl)),
-            initialSettings: InAppWebViewSettings(
-              preferredContentMode: UserPreferredContentMode.DESKTOP,
-              userAgent:
-                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-              javaScriptEnabled: true,
-              useOnLoadResource: true,
-              loadsImagesAutomatically: false,
-            ),
-            onWebViewCreated: (controller) async {
-              _webViewController = controller;
-              await controller.evaluateJavascript(source: """
+  Widget _buildWebView(HomeController homeController) => InAppWebView(
+        initialUrlRequest:
+            URLRequest(url: WebUri(ScrappingService().instance.baseUrl)),
+        initialSettings: InAppWebViewSettings(
+          preferredContentMode: UserPreferredContentMode.DESKTOP,
+          userAgent:
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+          javaScriptEnabled: true,
+          useOnLoadResource: true,
+          loadsImagesAutomatically: false,
+        ),
+        onWebViewCreated: (controller) async {
+          _webViewController = controller;
+          await controller.evaluateJavascript(source: """
   document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=1280,height=280 initial-scale=1.0');
 """);
-            },
-            onLoadStart: (controller, url) {
-              _homeController.drawerIsLoading = true;
-              _homeController.update(['drawer']);
-            },
-            onLoadStop: (controller, url) async {
-              String? html = await controller.getHtml();
-              categorysData = await ScrappingService.getCategorys(html);
-              _homeController.drawerIsLoading = false;
-              _homeController.update(['drawer']);
-            },
-            onReceivedError: (controller, request, error) async {
-              String? html = await controller.getHtml();
-              categorysData = await ScrappingService.getCategorys(html,
-                  hasError: true, error: error);
-              _homeController.drawerIsLoading = false;
-              _homeController.update(['drawer']);
-            },
-          ));
+        },
+        onLoadStart: (controller, url) {
+          isLoading = true;
+          homeController.update(['drawerBody']);
+        },
+        onLoadStop: (controller, url) async {
+          String? html = await controller.getHtml();
+          categorysData = await ScrappingService.getCategorys(html);
+          isLoading = false;
+          homeController.update(['drawerBody']);
+        },
+        onReceivedError: (controller, request, error) async {
+          String? html = await controller.getHtml();
+          categorysData = await ScrappingService.getCategorys(html,
+              hasError: true, error: error);
+          isLoading = false;
+          homeController.update(['drawerBody']);
+        },
+      );
 
   Widget _loadingWidget() => Container(
         alignment: Alignment.center,

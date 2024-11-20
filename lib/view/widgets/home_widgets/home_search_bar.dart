@@ -103,69 +103,72 @@ class HomeSearchBar extends StatelessWidget {
 
   Widget _buildPopupMenu(HomeController controller,
       {Widget? secondary, Color? color, List<BoxShadow>? boxShadow}) {
-    if (controller.itemsData['connectionStatus']) {
-      if (controller.itemsData['error']['status'] == false) {
-        return InkWell(
-          onTap: () async {
-            showMenu(
-                context: Get.context!,
-                position: RelativeRect.fromDirectional(
-                  textDirection: TextDirection.rtl,
-                  start: 70,
-                  end: 90,
-                  top: 0,
-                  bottom: 0,
-                ),
-                color: _appTheme.theme.colorScheme.secondary,
-                useRootNavigator: true,
-                items: [
-                  PopupMenuItem(
-                    onTap: () async {
-                      controller.title = 'الكل';
-                      controller.isLoading = true;
-                      controller.update(['homeBody', 'homeSearchBar']);
-                      controller.pageNum = 1;
-                      ScrappingService().instance.getByCollection = false;
-                      ScrappingService().instance.baseUrl =
-                          AppConfig().instance.baseUrl;
-                      controller.itemsData = await ScrappingService.getItems();
-
-                      controller.isLoading = false;
-                      controller.update(['homeBody', 'homeSearchBar']);
-                    },
-                    child: const Column(children: [Text('الكل'), Divider()]),
+    if (controller.itemsData.isNotEmpty) {
+      if (controller.itemsData['connectionStatus']) {
+        if (controller.itemsData['error']?['status'] == false) {
+          return InkWell(
+            onTap: () async {
+              showMenu(
+                  context: Get.context!,
+                  position: RelativeRect.fromDirectional(
+                    textDirection: TextDirection.rtl,
+                    start: 70,
+                    end: 90,
+                    top: 0,
+                    bottom: 0,
                   ),
-                  ...List.generate(
-                      controller.itemsData['body']['collections'].length,
-                      (i) => PopupMenuItem(
-                            onTap: () async {
-                              await _getItemsByCollection(controller, i);
-                            },
-                            child: Column(children: [
-                              Text(controller.itemsData['body']['collections']
-                                  .elementAt(i)['name']),
-                              const Divider()
-                            ]),
-                          ))
-                ]);
-          },
-          child: Container(
-            padding: const EdgeInsets.all(3),
-            decoration: BoxDecoration(
-                color: color ?? _appTheme.theme.colorScheme.secondary,
-                borderRadius: BorderRadius.circular(5),
-                boxShadow: boxShadow ??
-                    [
-                      BoxShadow(
-                          color: _appTheme.theme.shadowColor,
-                          offset: const Offset(0, 1.5)),
-                    ]),
-            child: const Row(children: [
-              Text('التصنيف ', style: TextStyle(fontSize: 19)),
-              Icon(Icons.keyboard_arrow_down)
-            ]),
-          ),
-        );
+                  color: _appTheme.theme.colorScheme.secondary,
+                  useRootNavigator: true,
+                  items: [
+                    PopupMenuItem(
+                      onTap: () async {
+                        controller.title = 'الكل';
+                        controller.isLoading = true;
+                        controller.update(['homeBody', 'homeSearchBar']);
+                        controller.pageNum = 1;
+                        ScrappingService().instance.getByCollection = false;
+                        ScrappingService().instance.baseUrl =
+                            AppConfig().instance.baseUrl;
+                        controller.itemsData =
+                            await ScrappingService.getItems();
+
+                        controller.isLoading = false;
+                        controller.update(['homeBody', 'homeSearchBar']);
+                      },
+                      child: const Column(children: [Text('الكل'), Divider()]),
+                    ),
+                    ...List.generate(
+                        controller.itemsData['body']['collections'].length,
+                        (i) => PopupMenuItem(
+                              onTap: () async {
+                                await _getItemsByCollection(controller, i);
+                              },
+                              child: Column(children: [
+                                Text(controller.itemsData['body']['collections']
+                                    .elementAt(i)['name']),
+                                const Divider()
+                              ]),
+                            ))
+                  ]);
+            },
+            child: Container(
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                  color: color ?? _appTheme.theme.colorScheme.secondary,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: boxShadow ??
+                      [
+                        BoxShadow(
+                            color: _appTheme.theme.shadowColor,
+                            offset: const Offset(0, 1.5)),
+                      ]),
+              child: const Row(children: [
+                Text('التصنيف ', style: TextStyle(fontSize: 19)),
+                Icon(Icons.keyboard_arrow_down)
+              ]),
+            ),
+          );
+        }
       }
     }
 

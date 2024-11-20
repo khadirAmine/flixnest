@@ -31,7 +31,7 @@ class Home extends StatelessWidget {
           automaticallyImplyLeading: false,
           title: HomeSearchBar(),
         ),
-        drawer: const HomeDrawer(),
+        drawer: HomeDrawer(),
         backgroundColor: _appTheme.theme.scaffoldBackgroundColor,
         body: GetBuilder<HomeController>(
             id: 'homeBody', builder: (controller) => _buildBody(controller)));
@@ -44,11 +44,13 @@ class Home extends StatelessWidget {
         color: AppTheme().instance.theme.colorScheme.secondary,
         size: ((Get.width + Get.height) / 2) * 0.06,
       ));
+    } else if (controller.itemsData.isEmpty) {
+      return const SizedBox();
     } else if (controller.itemsData['connectionStatus'] == false) {
       return NoWifiWidget(onTapRetry: () async {
         await controller.reTry();
       });
-    } else if (controller.itemsData['error']?['status'] == true) {
+    } else if (controller.itemsData['error']['status'] == true) {
       return ErrorBodyWidget(
           statusCode: controller.itemsData['statusCode'],
           onTapRetry: () async {
@@ -94,7 +96,7 @@ class Home extends StatelessWidget {
             ),
           );
         },
-        itemCount: controller.itemsData['body']['items']?.length,
+        itemCount: controller.itemsData['body']?['items']?.length,
       );
     }
   }
