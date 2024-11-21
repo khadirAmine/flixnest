@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 import '../../controller/home_controller.dart';
@@ -9,6 +8,7 @@ import '../../core/service/scrapping_service.dart';
 import '../../data/models/item_model.dart';
 import '../widgets/home_widgets/grid_view_loading.dart';
 import '../widgets/home_widgets/home_drawer.dart';
+import '../widgets/shared/custom_circular_progress.dart';
 import '../widgets/shared/error_widget.dart';
 import '../widgets/home_widgets/home_search_bar.dart';
 import '../widgets/home_widgets/item_card.dart';
@@ -39,11 +39,7 @@ class Home extends StatelessWidget {
 
   Widget _buildBody(HomeController controller) {
     if (controller.isLoading) {
-      return Center(
-          child: SpinKitDualRing(
-        color: AppTheme().instance.theme.colorScheme.secondary,
-        size: ((Get.width + Get.height) / 2) * 0.06,
-      ));
+      return Center(child: CustomCircularProgress());
     } else if (controller.itemsData.isEmpty) {
       return const SizedBox();
     } else if (controller.itemsData['connectionStatus'] == false) {

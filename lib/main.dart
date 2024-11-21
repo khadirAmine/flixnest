@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'core/bindings/details_bindings.dart';
 import 'core/bindings/home_bindings.dart';
 import 'core/config/routes.dart';
 import 'core/config/theme.dart';
@@ -27,7 +28,10 @@ class MyApp extends StatelessWidget {
       initialRoute: Routes.home,
       getPages: [
         GetPage(name: Routes.home, page: () => Home(), binding: HomeBindings()),
-        GetPage(name: Routes.details, page: () => Details()),
+        GetPage(
+            name: Routes.details,
+            page: () => const Details(),
+            binding: DetailsBindings()),
       ],
     );
   }

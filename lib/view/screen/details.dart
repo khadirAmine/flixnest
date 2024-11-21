@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../controller/details_controller.dart';
 import '../../data/models/item_details_model.dart';
 import '../widgets/details_widgets/details_body.dart';
+import '../widgets/shared/custom_circular_progress.dart';
 
 class Details extends StatelessWidget {
   const Details({super.key});
@@ -11,9 +12,16 @@ class Details extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(backgroundColor: Colors.red),
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: const Icon(Icons.arrow_back),
+          ),
+          automaticallyImplyLeading: false,
+        ),
         body: GetBuilder<DetailsController>(
-            init: DetailsController(),
             builder: (controller) => FutureBuilder(
                   future: controller.getData(),
                   builder: (context, snapshot) {
@@ -37,7 +45,7 @@ class Details extends StatelessWidget {
                         isFilm: snapshot.data?['body']['isFilm'],
                       ));
                     }
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(child: CustomCircularProgress());
                   },
                 )));
   }

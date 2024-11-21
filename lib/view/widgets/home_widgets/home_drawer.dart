@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/home_controller.dart';
 import '../../../core/config/assets.dart';
 import '../../../core/config/theme.dart';
 import '../../../core/service/scrapping_service.dart';
+import '../shared/custom_circular_progress.dart';
 import '../shared/error_widget.dart';
 import '../shared/no_wifi_widget.dart';
 
@@ -18,7 +18,7 @@ class HomeDrawer extends StatelessWidget {
 
   InAppWebViewController? _webViewController;
 
-  final ThemeData theme = AppTheme().instance.theme;
+  final ThemeData _appTheme = AppTheme().instance.theme;
 
   Map<String, dynamic>? categorysData = {};
 
@@ -37,7 +37,7 @@ class HomeDrawer extends StatelessWidget {
               width: Get.width * 0.7,
               height: Get.height,
               decoration: BoxDecoration(
-                  color: theme.colorScheme.secondary,
+                  color: _appTheme.colorScheme.secondary,
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(15),
                       bottomLeft: Radius.circular(15))),
@@ -66,7 +66,7 @@ class HomeDrawer extends StatelessWidget {
                 width: Get.width,
                 height: Get.height * 0.1,
                 decoration: BoxDecoration(
-                    color: theme.colorScheme.secondary,
+                    color: _appTheme.colorScheme.secondary,
                     borderRadius:
                         const BorderRadius.only(topLeft: Radius.circular(15))),
                 child: Image.asset(Assets().images.logo))
@@ -124,10 +124,10 @@ class HomeDrawer extends StatelessWidget {
           margin: EdgeInsets.symmetric(vertical: Get.height * 0.005),
           decoration: BoxDecoration(
               color: items['isSellected']
-                  ? theme.colorScheme.secondary
-                  : theme.primaryColor,
+                  ? _appTheme.colorScheme.secondary
+                  : _appTheme.primaryColor,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: theme.shadowColor)),
+              border: Border.all(color: _appTheme.shadowColor)),
           width: Get.width,
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: Get.height * 0.01),
@@ -174,9 +174,6 @@ class HomeDrawer extends StatelessWidget {
   Widget _loadingWidget() => Container(
         alignment: Alignment.center,
         height: Get.height,
-        child: SpinKitDualRing(
-          color: AppTheme().instance.theme.primaryColor,
-          size: ((Get.width + Get.height) / 2) * 0.06,
-        ),
+        child: CustomCircularProgress(color: _appTheme.primaryColor),
       );
 }

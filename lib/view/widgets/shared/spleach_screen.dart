@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 import '../../../core/config/assets.dart';
 import '../../../core/config/theme.dart';
+import 'custom_circular_progress.dart';
 
 class SpleachScreen extends StatelessWidget {
   SpleachScreen({super.key});
@@ -30,10 +30,8 @@ class SpleachScreen extends StatelessWidget {
                     child: Image.asset(
                   Assets().images.logo,
                 )),
-                SpinKitDualRing(
-                  color: _appTheme.colorScheme.secondary,
-                  size: ((Get.width + Get.height) / 2) * 0.1,
-                ),
+                CustomCircularProgress(
+                    size: ((Get.width + Get.height) / 2) * 0.1),
               ],
             )),
       ));

@@ -30,7 +30,19 @@ class DetailsBody extends StatelessWidget {
       SizedBox(height: Get.height * 0.04),
       IframeCard(iframe: model.iframe),
       SizedBox(height: Get.height * 0.04),
-      SizedBox(height: Get.height * 0.04),
+      _buildFilmOrNot(model.isFilm ?? false),
     ]);
+  }
+
+  Widget _buildFilmOrNot(bool isFilm) {
+    switch (isFilm) {
+      case true:
+        return const Column(children: [
+          Text('قد يعجبك ايضا :'),
+        ]);
+
+      case false:
+        return const Text('isNotFilm');
+    }
   }
 }
