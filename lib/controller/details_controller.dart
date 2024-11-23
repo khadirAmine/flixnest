@@ -4,6 +4,7 @@ import '../core/service/scrapping_service.dart';
 
 class DetailsController extends GetxController {
   late String href;
+  late String title;
 
   Future<Map<String, dynamic>> getData() async {
     Map<String, dynamic> data = await ScrappingService.getItemDetails(href);
@@ -13,6 +14,7 @@ class DetailsController extends GetxController {
   @override
   void onInit() {
     href = Get.arguments['href'];
+    title = Get.arguments['title'];
     super.onInit();
   }
 }

@@ -75,7 +75,9 @@ class Home extends StatelessWidget {
             onTap: () {
               Get.toNamed(Routes.details, arguments: {
                 'href':
-                    controller.itemsData['body']['items'].elementAt(i)['href']
+                    controller.itemsData['body']['items'].elementAt(i)['href'],
+                'title':
+                    controller.itemsData['body']['items'].elementAt(i)['title']
               });
             },
             model: ItemModel(

@@ -117,7 +117,14 @@ class ScrappingService {
     Map<String, dynamic> data = {};
     try {
       if (await checkConnectionStatus()) {
-        data.addAll({'connectionStatus': true, 'body': {}});
+        data.addAll({
+          'connectionStatus': true,
+          'body': {
+            'details': {},
+            'similarOffer': <dynamic>{},
+            'seasions': <dynamic>{}
+          }
+        });
       } else {
         data.addAll({'connectionStatus': false});
         return data;
@@ -179,7 +186,7 @@ class ScrappingService {
       String? storyMovie =
           bs.find('div', class_: 'StoryMovieContent')?.text.trim();
       String? iframe = bs.find('iframe')?.attributes['data-lazy-src'];
-      data['body'].addAll({
+      Map<String, dynamic> details = {
         'title': title,
         'imageUrl': imageUrl,
         'year': year,
@@ -191,26 +198,29 @@ class ScrappingService {
         'duration': duration,
         'storyMovie': storyMovie,
         'iframe': iframe,
-      });
+      };
+      data['body']['details'].addAll(details);
       //< find seasions
-      List<Bs4Element>? seasionsList = bs
-          .find('div', class_: 'List--Seasons--Episodes')
-          ?.findAll('a', class_: 'hoverable activable');
+      List<Bs4Element>? seasionsList =
+          bs.find('div', class_: 'List--Seasons--Episodes')?.findAll('a');
       List seasions = [];
       if (seasionsList != null) {
-        for (int i = 0; i < seasionsList.length; i++) {
+        for (Bs4Element seasion in seasionsList) {
+          bool selected = seasion.className == 'selected';
           seasions.add({
-            seasionsList[i].text: {'href': seasionsList[i].attributes['href']}
+            seasion.text: {
+              'href': seasion.attributes['href'],
+              'selected': selected
+            }
           });
         }
       }
-      data['body'].addAll({'seasions': seasions});
+      data['body']['seasions'].addAll(seasions);
       //>
 
       //< find episodes
-      List<Bs4Element>? episodesList = bs
-          .find('div', class_: 'Episodes--Seasons--Episodes')
-          ?.findAll('a', class_: 'hoverable activable');
+      List<Bs4Element>? episodesList =
+          bs.find('div', class_: 'Episodes--Seasons--Episodes')?.findAll('a');
       List? episodes;
       if (episodesList != null) {
         for (int i = 0; i < episodesList.length; i++) {
@@ -219,20 +229,65 @@ class ScrappingService {
             episodesList[i].text: {'href': episodesList[i].attributes['href']}
           });
         }
-        data['body'].addAll({'episodes': episodes, 'isFilm': false});
+        data['body']['details'].addAll({'episodes': episodes, 'isFilm': false});
       } else {
-        data['body'].addAll({'episodes': episodes, 'isFilm': true});
+        data['body']['details'].addAll({'episodes': episodes, 'isFilm': true});
       }
+      //>
+
+      //< find Similar offer
+      List<Bs4Element>? similarOffer = bs
+          .find('div', class_: 'Grid--WecimaPosts')
+          ?.findAll('div', class_: 'Thumb--GridItem');
+      similarOffer?.forEach((item) {
+        String? href = item.find('a')?.attributes['href'];
+        String? title = item.find('a')?.attributes['title'];
+        String? year = item.find('span', class_: 'year')?.text.trim();
+        //< get Image Url
+        RegExp regExp = RegExp(r'url\(([^)]+)\)');
+        String? getImageUrl = item
+            .find('span', class_: 'BG--GridItem')
+            ?.attributes['data-lazy-style'];
+        Match? match = regExp.firstMatch(getImageUrl ?? '');
+        String? imageUrl = match?.group(1);
+        //>
+        String? episode = item
+            .find('div', class_: 'Episode--number')
+            ?.find('span')
+            ?.text
+            .trim();
+        if (episode != null) {
+          data['body']['similarOffer'].add({
+            'title': title,
+            'imageUrl': imageUrl,
+            'episode': episode,
+            'year': year,
+            'href': href,
+            'isFilm': false,
+          });
+        } else {
+          data['body']['similarOffer'].add({
+            'title': title,
+            'imageUrl': imageUrl,
+            'year': year,
+            'href': href,
+            'isFilm': true,
+          });
+        }
+      });
+
       //>
       data.addAll({
         'error': {'status': false}
       });
     } catch (e) {
+      logger('scrapping error : $e');
       data.addAll({
         'statusCode': e.hashCode,
         'error': {'status': true, 'body': e}
       });
     }
+
     logger('finish scrapping');
     return data;
   }
