@@ -15,7 +15,7 @@ class ItemModel {
   String? href;
   bool? isFilm;
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'title': title,
       'imageUrl': imageUrl,

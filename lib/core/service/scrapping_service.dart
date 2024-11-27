@@ -102,6 +102,7 @@ class ScrappingService {
         'error': {'status': false}
       });
     } catch (e) {
+      logger('Error : $e');
       data.addAll({
         'statusCode': e.hashCode,
         'error': {'status': true, 'body': e}

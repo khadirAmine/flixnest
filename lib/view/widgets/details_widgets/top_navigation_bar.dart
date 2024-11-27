@@ -3,9 +3,16 @@ import 'package:get/get.dart';
 
 import '../../../core/config/theme.dart';
 
+// ignore: must_be_immutable
 class TopNavigationBar extends StatefulWidget {
-  const TopNavigationBar({super.key, required this.getItem});
+  TopNavigationBar(
+      {super.key,
+      required this.getItem,
+      required this.isFilm,
+      this.selectedIndex = 0});
   final Function(int index) getItem;
+  final bool isFilm;
+  int selectedIndex = 0;
 
   @override
   State<TopNavigationBar> createState() => _TopNavigationBarState();
@@ -14,9 +21,15 @@ class TopNavigationBar extends StatefulWidget {
 class _TopNavigationBarState extends State<TopNavigationBar> {
   final ThemeData _appTheme = AppTheme().instance.theme;
 
-  final List titles = ['التفاصيل', 'الحلقات', 'عروض مشابهة', 'مشاهدة الفلم'];
+  late final List titles;
 
-  int selectedIndex = 0;
+  @override
+  void initState() {
+    titles = widget.isFilm
+        ? ['التفاصيل', 'مشاهدة الفلم', 'عروض مشابهة']
+        : ['التفاصيل', 'الحلقات'];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +51,7 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
 
   Widget _buildItems(int i) => InkWell(
       onTap: () {
-        selectedIndex = i;
+        widget.selectedIndex = i;
         setState(() {});
         widget.getItem.call(i);
       },
@@ -50,7 +63,7 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
             children: [
               Text(
                 titles[i],
-                style: selectedIndex == i
+                style: widget.selectedIndex == i
                     ? TextStyle(
                         color: _appTheme.primaryColor,
                         fontSize: 19,
@@ -58,8 +71,9 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
                       )
                     : null,
               ),
-              selectedIndex == i
+              widget.selectedIndex == i
                   ? Container(
+                      alignment: Alignment.bottomCenter,
                       height: Get.height * 0.003,
                       decoration: BoxDecoration(
                           color: _appTheme.colorScheme.tertiary,
