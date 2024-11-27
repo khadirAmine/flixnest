@@ -6,7 +6,7 @@ import 'core/bindings/home_bindings.dart';
 import 'core/config/routes.dart';
 import 'core/config/theme.dart';
 import 'core/utils/methodes.dart';
-import 'view/screen/details.dart';
+import 'view/screen/details/details.dart';
 import 'view/screen/home.dart';
 
 void main() async {

@@ -25,9 +25,8 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
 
   @override
   void initState() {
-    titles = widget.isFilm
-        ? ['التفاصيل', 'مشاهدة الفلم', 'عروض مشابهة']
-        : ['التفاصيل', 'الحلقات'];
+    titles =
+        widget.isFilm ? ['التفاصيل', 'مشاهدة الفلم'] : ['التفاصيل', 'الحلقات'];
     super.initState();
   }
 

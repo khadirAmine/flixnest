@@ -222,15 +222,20 @@ class ScrappingService {
       //< find episodes
       List<Bs4Element>? episodesList =
           bs.find('div', class_: 'Episodes--Seasons--Episodes')?.findAll('a');
-      List? episodes;
+      Set episodes = {};
       if (episodesList != null) {
         for (int i = 0; i < episodesList.length; i++) {
           // ignore: dead_code
-          episodes?.add({
-            episodesList[i].text: {'href': episodesList[i].attributes['href']}
+          episodes.add({
+            'name': episodesList[i].text,
+            'href': episodesList[i].attributes['href'],
+            'selected':
+                episodesList[i].className == 'hoverable activable selected'
           });
         }
-        data['body']['details'].addAll({'episodes': episodes, 'isFilm': false});
+
+        data['body']['details']
+            .addAll({'episodes': episodes.toSet(), 'isFilm': false});
       } else {
         data['body']['details'].addAll({'episodes': episodes, 'isFilm': true});
       }

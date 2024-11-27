@@ -28,7 +28,7 @@ class ItemDetailsModel {
   String? storyMovie;
   String? iframe;
   Set? seasions;
-  List? episodes;
+  Set? episodes;
   bool? isFilm;
   Set? similarOffers;
 
