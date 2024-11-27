@@ -281,7 +281,6 @@ class ScrappingService {
           });
         }
       });
-
       //>
       data.addAll({
         'error': {'status': false}

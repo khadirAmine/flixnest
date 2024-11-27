@@ -47,7 +47,7 @@ class ItemDetailsModel {
       iframe: json['details']['iframe'],
       episodes: json['details']['episodes'],
       isFilm: json['details']['isFilm'],
-      similarOffers: json['similarOffers'],
+      similarOffers: json['similarOffer'],
       seasions: json['seasions'],
     );
   }

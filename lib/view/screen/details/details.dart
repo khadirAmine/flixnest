@@ -84,15 +84,13 @@ class Details extends StatelessWidget {
                 )));
   }
 
-  List<Widget> _getBodys(bool isFilm, Map<String, dynamic> dataBody) {
+  List<Widget> _getBodys(bool isFilm, Map<String, dynamic> data) {
     final SerieBody serieBody =
-        SerieBody(model: ItemDetailsModel.fromJson(dataBody));
+        SerieBody(model: ItemDetailsModel.fromJson(data));
     final WatchFilm watchFilm =
-        WatchFilm(model: ItemDetailsModel.fromJson(dataBody));
+        WatchFilm(model: ItemDetailsModel.fromJson(data));
 
-    List<Widget> bodys = [
-      DetailsBody(model: ItemDetailsModel.fromJson(dataBody))
-    ];
+    List<Widget> bodys = [DetailsBody(model: ItemDetailsModel.fromJson(data))];
     for (int i = 0; i < 2; i++) {
       if (i == 0) {
         isFilm ? null : bodys.add(serieBody);

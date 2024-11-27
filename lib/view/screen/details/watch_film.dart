@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../data/models/item_details_model.dart';
+import '../../../data/models/item_model.dart';
 import '../../widgets/details_widgets/iframe_card.dart';
+import '../../widgets/shared/item_card.dart';
 
 class WatchFilm extends StatelessWidget {
   const WatchFilm({super.key, required this.model});
@@ -16,19 +18,18 @@ class WatchFilm extends StatelessWidget {
         SizedBox(height: Get.height * 0.02),
         IframeCard(iframe: model.iframe),
         SizedBox(height: Get.height * 0.02),
-        // Wrap(
-        //   spacing: Get.width * 0.015,
-        //   runSpacing: Get.height * 0.015,
-        //   alignment: WrapAlignment.center,
-        //   children: List.generate(
-        //       model.episodes?.length ?? 0,
-        //       (i) => InkWell(
-        //           onTap: () {
-        //             //     model.episodes?.elementAt(i)['href']
-        //           },
-        //           child: _buildEpisode(model.episodes?.elementAt(i)['name'],
-        //               model.episodes?.elementAt(i)['selected']))),
-        // ),
+        const Text('عروض مشابهة'),
+        SizedBox(height: Get.height * 0.02),
+        Wrap(
+          spacing: Get.width * 0.025,
+          runSpacing: Get.height * 0.015,
+          alignment: WrapAlignment.center,
+          children: List.generate(
+            model.similarOffers?.length ?? 0,
+            (i) => ItemCard(
+                model: ItemModel.fromJson(model.similarOffers?.elementAt(i))),
+          ),
+        ),
         SizedBox(height: Get.height * 0.5),
       ],
     );

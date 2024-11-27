@@ -25,4 +25,15 @@ class ItemModel {
       'isFilm': isFilm
     };
   }
+
+  factory ItemModel.fromJson(Map<String, dynamic> json) {
+    return ItemModel(
+      title: json['title'],
+      imageUrl: json['imageUrl'],
+      episode: json['episode'],
+      year: json['year'],
+      href: json['href'],
+      isFilm: json['isFilm'],
+    );
+  }
 }

@@ -11,7 +11,7 @@ import '../widgets/home_widgets/home_drawer.dart';
 import '../widgets/shared/custom_circular_progress.dart';
 import '../widgets/shared/error_widget.dart';
 import '../widgets/home_widgets/home_search_bar.dart';
-import '../widgets/home_widgets/item_card.dart';
+import '../widgets/shared/item_card.dart';
 import '../widgets/shared/no_wifi_widget.dart';
 
 class Home extends StatelessWidget {
