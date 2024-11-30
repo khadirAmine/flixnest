@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/config/assets.dart';
+import '../../../core/config/constants.dart';
 import '../../../core/config/theme.dart';
 import '../../../data/models/item_model.dart';
 
@@ -30,20 +31,7 @@ class _ItemCardState extends State<ItemCard> {
       child: Container(
         width: Get.width * 0.3,
         height: Get.height * 0.2,
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme().instance.theme.shadowColor,
-              blurRadius: 2,
-              spreadRadius: 2.5,
-            )
-          ],
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: AppTheme().instance.theme.colorScheme.tertiary,
-          ),
-        ),
+        decoration: itemCardDecoration,
         child: _buildImage(),
       ),
     );
