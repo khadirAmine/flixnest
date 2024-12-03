@@ -14,9 +14,13 @@ import '../../widgets/shared/no_wifi_widget.dart';
 // ignore: must_be_immutable
 class Details extends StatelessWidget {
   Details({super.key});
+
   final DetailsController _detailsController = Get.find<DetailsController>();
+
   final PageController _pageController = PageController();
+
   int indexBody = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,48 +40,56 @@ class Details extends StatelessWidget {
                   future: controller.getData(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
+                      if (controller.isLoading) {
+                        return Center(child: CustomCircularProgress());
+                      }
                       if (snapshot.data?['connectionStatus'] == false) {
-                        return NoWifiWidget();
-                      } else if (snapshot.data?['error']['status']) {
+                        return NoWifiWidget(onTapRetry: () {
+                          controller.retry();
+                        });
+                      }
+                      if (snapshot.data?['error']['status']) {
                         return ErrorBodyWidget(
-                            statusCode: snapshot.data?['statusCode']);
-                      } else {
-                        return SingleChildScrollView(
-                          physics: const NeverScrollableScrollPhysics(),
-                          child: Column(children: [
-                            GetBuilder<DetailsController>(
-                                id: 'topNavigationBar',
-                                builder: (controller) => TopNavigationBar(
-                                      selectedIndex: indexBody,
-                                      isFilm: snapshot.data?['body']['details']
-                                              ['isFilm'] ??
-                                          false,
-                                      getItem: (int index) {
-                                        _pageController.animateToPage(index,
-                                            duration: const Duration(
-                                                milliseconds: 200),
-                                            curve: Curves.bounceIn);
-                                        indexBody = index;
-                                      },
-                                    )),
-                            SizedBox(
-                              height: Get.height,
-                              child: PageView(
-                                controller: _pageController,
-                                children: _getBodys(
-                                    snapshot.data?['body']['details']
+                            statusCode: snapshot.data?['statusCode'],
+                            onTapRetry: () {
+                              controller.retry();
+                            });
+                      }
+
+                      return SingleChildScrollView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        child: Column(children: [
+                          GetBuilder<DetailsController>(
+                              id: 'topNavigationBar',
+                              builder: (controller) => TopNavigationBar(
+                                    selectedIndex: indexBody,
+                                    isFilm: snapshot.data?['body']['details']
                                             ['isFilm'] ??
                                         false,
-                                    snapshot.data?['body'] ?? {}),
-                                onPageChanged: (value) {
-                                  indexBody = value;
-                                  controller.update(['topNavigationBar']);
-                                },
-                              ),
+                                    getItem: (int index) {
+                                      _pageController.animateToPage(index,
+                                          duration:
+                                              const Duration(milliseconds: 200),
+                                          curve: Curves.bounceIn);
+                                      indexBody = index;
+                                    },
+                                  )),
+                          SizedBox(
+                            height: Get.height,
+                            child: PageView(
+                              controller: _pageController,
+                              children: _getBodys(
+                                  snapshot.data?['body']['details']['isFilm'] ??
+                                      false,
+                                  snapshot.data?['body'] ?? {}),
+                              onPageChanged: (value) {
+                                indexBody = value;
+                                controller.update(['topNavigationBar']);
+                              },
                             ),
-                          ]),
-                        );
-                      }
+                          ),
+                        ]),
+                      );
                     }
                     return Center(child: CustomCircularProgress());
                   },

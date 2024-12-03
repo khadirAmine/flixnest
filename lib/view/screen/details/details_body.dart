@@ -43,29 +43,33 @@ class _DetailsBodyState extends State<DetailsBody> {
         ...List.generate(
             details.length,
             (i) => _biuldDetails(
-                details[i].keys.elementAt(0),
-                details[i][details[i].keys.elementAt(0)],
-                details.length != i + 1)),
+                  details[i].keys.elementAt(0),
+                  details[i][details[i].keys.elementAt(0)],
+                )),
         SizedBox(height: Get.height * 0.3),
       ]);
 
-  Widget _biuldDetails(String key, String? value, bool showDivider) {
+  Widget _biuldDetails(String key, String? value) {
     return value != null
         ? Column(
             children: [
+              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                Text(key,
+                    style:
+                        TextStyle(color: _appTheme.primaryColor, fontSize: 17)),
+                SizedBox(width: Get.width * 0.02),
+                Expanded(child: Divider(color: _appTheme.primaryColor)),
+              ]),
               ListTile(
-                leading: Text('$key :',
+                title: Text(value,
                     style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 17,
                         fontWeight: FontWeight.w700,
                         color: Colors.black)),
-                title: Text(value),
                 titleAlignment: ListTileTitleAlignment.top,
                 dense: true,
               ),
-              showDivider
-                  ? const Divider(color: Colors.black)
-                  : const SizedBox(),
+              SizedBox(height: Get.height * 0.03),
             ],
           )
         : const SizedBox();
