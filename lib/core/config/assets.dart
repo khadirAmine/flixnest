@@ -6,9 +6,10 @@ class ImageAssets {
 class SvgAssets {
   final String noWifi = 'assets/svg/no_wifi.svg';
   final String error = 'assets/svg/error.svg';
+  final String play = 'assets/svg/play.svg';
 }
 
-class Assets {
+class AppAsset {
   ImageAssets get images => ImageAssets();
   SvgAssets get svgs => SvgAssets();
 }

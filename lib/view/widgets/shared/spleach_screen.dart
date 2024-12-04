@@ -28,7 +28,7 @@ class SpleachScreen extends StatelessWidget {
               children: [
                 ClipRRect(
                     child: Image.asset(
-                  Assets().images.logo,
+                  AppAsset().images.logo,
                 )),
                 CustomCircularProgress(
                     size: ((Get.width + Get.height) / 2) * 0.1),

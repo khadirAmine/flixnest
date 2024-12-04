@@ -88,7 +88,7 @@ class _DetailsBodyState extends State<DetailsBody> {
               child: Image.network(widget.model.imageUrl ?? '',
                   fit: BoxFit.fill, errorBuilder: (context, error, stackTrace) {
                 return Image.asset(
-                  Assets().images.errorImage,
+                  AppAsset().images.errorImage,
                   fit: BoxFit.fill,
                 );
               })),
@@ -101,7 +101,7 @@ class _DetailsBodyState extends State<DetailsBody> {
               child: Image.network(widget.model.imageUrl ?? '',
                   fit: BoxFit.fill, errorBuilder: (context, error, stackTrace) {
                 return Image.asset(
-                  Assets().images.errorImage,
+                  AppAsset().images.errorImage,
                   fit: BoxFit.fill,
                 );
               })),

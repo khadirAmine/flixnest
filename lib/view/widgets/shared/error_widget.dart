@@ -18,7 +18,7 @@ class ErrorBodyWidget extends StatelessWidget {
           child: Column(
             children: [
               SvgPicture.asset(
-                Assets().svgs.error,
+                AppAsset().svgs.error,
                 width: Get.width * 0.3,
                 colorFilter: ColorFilter.mode(
                     _appTheme.theme.colorScheme.secondaryContainer,

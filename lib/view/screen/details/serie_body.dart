@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/config/constants.dart';
 import '../../../core/config/theme.dart';
 import '../../../data/models/item_details_model.dart';
 import '../../widgets/details_widgets/iframe_card.dart';
@@ -16,7 +17,9 @@ class SerieBody extends StatelessWidget {
     return ListView(
       children: [
         SizedBox(height: Get.height * 0.02),
-        IframeCard(iframe: model.iframe),
+        IframeCard(
+            iframe: model.iframe ?? 'www.google.com',
+            imageUrl: model.imageUrl ?? errorImageLink),
         SizedBox(height: Get.height * 0.02),
         Wrap(
           spacing: Get.width * 0.015,

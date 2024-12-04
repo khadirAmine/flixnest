@@ -17,7 +17,7 @@ class NoWifiWidget extends StatelessWidget {
           child: Column(
             children: [
               SvgPicture.asset(
-                Assets().svgs.noWifi,
+                AppAsset().svgs.noWifi,
                 width: Get.width * 0.3,
                 colorFilter: ColorFilter.mode(
                     _appTheme.theme.colorScheme.secondaryContainer,

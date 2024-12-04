@@ -69,7 +69,7 @@ class HomeDrawer extends StatelessWidget {
                     color: _appTheme.colorScheme.secondary,
                     borderRadius:
                         const BorderRadius.only(topLeft: Radius.circular(15))),
-                child: Image.asset(Assets().images.logo))
+                child: Image.asset(AppAsset().images.logo))
           ],
         ),
       );
