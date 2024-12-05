@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/methodes.dart';
+
 class AppTheme {
   static final AppTheme _instance = AppTheme();
   AppTheme get instance => _instance;
@@ -37,15 +39,16 @@ class AppTheme {
     }
   }
 
-  void changeThemeMode(ThemeMode themeMode,
+  Future<void> changeThemeMode(ThemeMode newThemeMode,
       {GetxController? getxController}) async {
-    if (themeMode == ThemeMode.system) {
+    logger('change Theme Mode');
+    if (newThemeMode == ThemeMode.system) {
       bool isDarkMode = Get.isPlatformDarkMode;
       isDarkMode
           ? _instance.themeMode = ThemeMode.dark
           : _instance.themeMode = ThemeMode.light;
     } else {
-      _instance.themeMode = themeMode;
+      _instance.themeMode = newThemeMode;
     }
     _instance.theme = _getTheme();
     Get.changeTheme(_instance.theme);
@@ -58,6 +61,7 @@ class AppTheme {
             : _instance.themeMode == ThemeMode.dark
                 ? 'dark'
                 : 'system');
+    Get.appUpdate();
   }
 
 //* light Theme
@@ -75,6 +79,10 @@ class AppTheme {
         scrolledUnderElevation: 300,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
+      //>
+
+      //< switch
+      switchTheme: SwitchThemeData(),
       //>
 
       //< IconButtonTheme

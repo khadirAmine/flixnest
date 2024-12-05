@@ -22,11 +22,19 @@ class HomeDrawer extends StatelessWidget {
 
   Map<String, dynamic>? categorysData = {};
 
+  late String modeDesc;
+
+  late bool switchValue;
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
         initState: (state) {
           isLoading = true;
+          modeDesc = AppTheme().instance.themeMode == ThemeMode.dark
+              ? 'تفعيل الوضع النهاري'
+              : 'تفعيل الوضع الليلي';
+          switchValue = AppTheme().instance.themeMode == ThemeMode.light;
         },
         dispose: (state) {
           isLoading = false;
@@ -107,7 +115,44 @@ class HomeDrawer extends StatelessWidget {
                     categorysData?['body']?['categorys'].length ?? 0,
                     (i) => _buildButtonList(
                         categorysData?['body']['categorys'].elementAt(i),
-                        controller))
+                        controller)),
+                Container(
+                  width: Get.width,
+                  padding: EdgeInsets.only(right: Get.width * 0.05),
+                  margin: EdgeInsets.symmetric(vertical: Get.height * 0.005),
+                  decoration: BoxDecoration(
+                      color: _appTheme.primaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: _appTheme.shadowColor)),
+                  child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: Get.height * 0.01),
+                      child: Row(children: [
+                        Text(modeDesc, style: const TextStyle(fontSize: 20)),
+                        const Spacer(),
+                        Switch(
+                          value: switchValue,
+                          onChanged: (value) async {
+                            switchValue = !switchValue;
+                            controller.update(['drawerBody']);
+                            await AppTheme().instance.changeThemeMode(
+                                !switchValue
+                                    ? ThemeMode.dark
+                                    : ThemeMode.light);
+                          },
+                          activeThumbImage: AssetImage(AppAsset().images.sun),
+                          inactiveThumbImage:
+                              AssetImage(AppAsset().images.moon),
+                          trackOutlineColor: WidgetStatePropertyAll(
+                              _appTheme.colorScheme.secondary),
+                          thumbColor:
+                              const WidgetStatePropertyAll(Colors.white),
+                          trackColor: const WidgetStatePropertyAll(
+                              Color.fromARGB(255, 70, 70, 70)),
+                        ),
+                        SizedBox(width: Get.width * 0.01)
+                      ])),
+                ),
               ]);
   }
 
@@ -120,6 +165,7 @@ class HomeDrawer extends StatelessWidget {
           await homeController.reTry();
         },
         child: Container(
+          width: Get.width,
           padding: EdgeInsets.only(right: Get.width * 0.05),
           margin: EdgeInsets.symmetric(vertical: Get.height * 0.005),
           decoration: BoxDecoration(
@@ -128,7 +174,6 @@ class HomeDrawer extends StatelessWidget {
                   : _appTheme.primaryColor,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: _appTheme.shadowColor)),
-          width: Get.width,
           child: Padding(
               padding: EdgeInsets.symmetric(vertical: Get.height * 0.01),
               child: Text(items['name'], style: const TextStyle(fontSize: 20))),

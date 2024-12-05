@@ -1,6 +1,8 @@
 class ImageAssets {
   final String errorImage = 'assets/images/error_image.jpg';
   final String logo = 'assets/images/logo.png';
+  final String sun = 'assets/images/sun.png';
+  final String moon = 'assets/images/moon.png';
 }
 
 class SvgAssets {
