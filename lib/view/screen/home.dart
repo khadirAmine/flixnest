@@ -73,7 +73,7 @@ class Home extends StatelessWidget {
         itemBuilder: (i) {
           return ItemCard(
             onTap: () {
-              Get.toNamed(Routes.details, arguments: {
+              Get.toNamed(AppRoutes.details, arguments: {
                 'href':
                     controller.itemsData['body']['items'].elementAt(i)['href'],
                 'title':

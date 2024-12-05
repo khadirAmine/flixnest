@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/config/constants.dart';
+import '../../../core/config/routes.dart';
 import '../../../data/models/item_details_model.dart';
 import '../../../data/models/item_model.dart';
 import '../../widgets/details_widgets/iframe_card.dart';
@@ -31,6 +32,13 @@ class WatchFilm extends StatelessWidget {
           children: List.generate(
             model.similarOffers?.length ?? 0,
             (i) => ItemCard(
+                onTap: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(AppRoutes.details, arguments: {
+                    'href': model.similarOffers?.elementAt(i)['href'],
+                    'title': model.similarOffers?.elementAt(i)['title'],
+                  });
+                },
                 model: ItemModel.fromJson(model.similarOffers?.elementAt(i))),
           ),
         ),

@@ -25,11 +25,12 @@ class MyApp extends StatelessWidget {
       themeMode: AppTheme().instance.themeMode,
       theme: AppTheme().instance.theme,
       darkTheme: AppTheme().instance.darkTheme,
-      initialRoute: Routes.home,
+      initialRoute: AppRoutes.home,
       getPages: [
-        GetPage(name: Routes.home, page: () => Home(), binding: HomeBindings()),
         GetPage(
-            name: Routes.details,
+            name: AppRoutes.home, page: () => Home(), binding: HomeBindings()),
+        GetPage(
+            name: AppRoutes.details,
             page: () => Details(),
             binding: DetailsBindings()),
       ],
