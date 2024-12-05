@@ -7,8 +7,9 @@ class DetailsController extends GetxController {
   late String title;
   bool isLoading = false;
 
-  Future<Map<String, dynamic>> getData() async {
-    Map<String, dynamic> data = await ScrappingService.getItemDetails(href);
+  Future<Map<String, dynamic>> getData({String? authorHref}) async {
+    Map<String, dynamic> data =
+        await ScrappingService.getItemDetails(authorHref ?? href);
     return data;
   }
 

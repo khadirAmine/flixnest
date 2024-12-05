@@ -21,7 +21,8 @@ class WatchFilm extends StatelessWidget {
             iframe: model.iframe ?? 'www.google.com',
             imageUrl: model.imageUrl ?? errorImageLink),
         SizedBox(height: Get.height * 0.02),
-        const Text('عروض مشابهة'),
+        const Text('  عروض مشابهة',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
         SizedBox(height: Get.height * 0.02),
         Wrap(
           spacing: Get.width * 0.025,
