@@ -66,80 +66,115 @@ class AppTheme {
 
 //* light Theme
   final ThemeData lightTheme = ThemeData(
-      useMaterial3: true,
-      scaffoldBackgroundColor: Colors.white,
-      drawerTheme: const DrawerThemeData(),
+    useMaterial3: true,
+    scaffoldBackgroundColor: Colors.white,
 
-      //< App Bar Theme
-      appBarTheme: AppBarTheme(
-        backgroundColor: const Color.fromARGB(255, 91, 151, 255),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        shadowColor: Colors.black,
-        elevation: 6,
-        scrolledUnderElevation: 300,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      //>
+    //< App Bar Theme
+    appBarTheme: AppBarTheme(
+      backgroundColor: const Color.fromARGB(255, 91, 151, 255),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shadowColor: Colors.black,
+      elevation: 6,
+      scrolledUnderElevation: 300,
+      iconTheme: const IconThemeData(color: Colors.black),
+    ),
+    //>
 
-      //< switch
-      switchTheme: const SwitchThemeData(
-        thumbIcon:
-            WidgetStatePropertyAll(Icon(Icons.light_mode, color: Colors.white)),
-        trackOutlineColor:
-            WidgetStatePropertyAll(Color.fromARGB(255, 250, 182, 92)),
-        thumbColor: WidgetStatePropertyAll(Colors.black),
-        trackColor: WidgetStatePropertyAll(Color.fromARGB(255, 242, 242, 242)),
-      ),
-      //>
+    //< switch
+    switchTheme: const SwitchThemeData(
+      thumbIcon:
+          WidgetStatePropertyAll(Icon(Icons.light_mode, color: Colors.white)),
+      trackOutlineColor:
+          WidgetStatePropertyAll(Color.fromARGB(255, 250, 182, 92)),
+      thumbColor: WidgetStatePropertyAll(Colors.black),
+      trackColor: WidgetStatePropertyAll(Color.fromARGB(255, 242, 242, 242)),
+    ),
+    //>
 
-      //< IconButtonTheme
-      iconButtonTheme: const IconButtonThemeData(
-          style: ButtonStyle(
-              shadowColor: WidgetStatePropertyAll(Colors.black),
-              elevation: WidgetStatePropertyAll(5),
-              iconColor: WidgetStatePropertyAll(Colors.black),
-              backgroundColor:
-                  WidgetStatePropertyAll(Color.fromARGB(255, 250, 182, 92)))),
-      //>
+    //< IconButtonTheme
+    iconButtonTheme: const IconButtonThemeData(
+        style: ButtonStyle(
+            shadowColor: WidgetStatePropertyAll(Colors.black),
+            elevation: WidgetStatePropertyAll(5),
+            iconColor: WidgetStatePropertyAll(Colors.black),
+            backgroundColor:
+                WidgetStatePropertyAll(Color.fromARGB(255, 250, 182, 92)))),
+    //>
 
-      //< AppColors
-      primaryColor: const Color.fromARGB(255, 91, 151, 255),
-      shadowColor: const Color.fromARGB(137, 108, 101, 101),
-      //>
+    //< TextTheme
+    textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.black)),
+    //>
 
-      //< TextTheme
-      textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.black)),
-      //>
+    //< AppColors
+    primaryColor: const Color.fromARGB(255, 91, 151, 255),
+    shadowColor: const Color.fromARGB(137, 108, 101, 101),
+    //>
 
-      // colorScheme
-      colorScheme: const ColorScheme.light(
-        tertiary: Color.fromARGB(96, 42, 42, 42),
-        secondary: Color.fromARGB(255, 250, 182, 92),
-        outline: Colors.black,
-        secondaryContainer: Color.fromARGB(255, 100, 100, 100),
-        tertiaryContainer: Colors.white,
-      ));
+    // colorScheme
+    colorScheme: const ColorScheme.light(
+      tertiary: Color.fromARGB(96, 42, 42, 42),
+      secondary: Color.fromARGB(255, 250, 182, 92),
+      outline: Colors.black,
+      secondaryContainer: Color.fromARGB(255, 100, 100, 100),
+      tertiaryContainer: Colors.white,
+    ),
+    //>
+  );
 
   //* dark Theme
   final ThemeData darkTheme = ThemeData(
-      useMaterial3: true,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.grey,
-      ),
-      splashColor: const Color.fromARGB(255, 91, 151, 255),
+    useMaterial3: true,
+    scaffoldBackgroundColor: const Color.fromARGB(255, 43, 43, 43),
 
-      //< switch
-      switchTheme: const SwitchThemeData(
-        thumbIcon:
-            WidgetStatePropertyAll(Icon(Icons.dark_mode, color: Colors.black)),
-        trackOutlineColor: WidgetStatePropertyAll(
-          //todo: _appTheme.colorScheme.secondary
-          Colors.grey,
-        ),
-        thumbColor: WidgetStatePropertyAll(Colors.white),
-        trackColor: WidgetStatePropertyAll(Color.fromARGB(255, 70, 70, 70)),
-      ),
-      //>
+    //< App Bar Theme
+    appBarTheme: AppBarTheme(
+      backgroundColor: const Color.fromARGB(255, 70, 119, 204),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shadowColor: Colors.white,
+      elevation: 6,
+      scrolledUnderElevation: 300,
+      iconTheme: const IconThemeData(color: Colors.white),
+    ),
+    //>
 
-      colorScheme: const ColorScheme.dark(secondary: Colors.grey));
+    //< switch
+    switchTheme: const SwitchThemeData(
+      thumbIcon:
+          WidgetStatePropertyAll(Icon(Icons.dark_mode, color: Colors.black)),
+      trackOutlineColor: WidgetStatePropertyAll(
+        Colors.grey,
+      ),
+      thumbColor: WidgetStatePropertyAll(Colors.white),
+      trackColor: WidgetStatePropertyAll(Color.fromARGB(255, 70, 70, 70)),
+    ),
+    //>
+
+    //< IconButtonTheme
+    iconButtonTheme: const IconButtonThemeData(
+        style: ButtonStyle(
+            shadowColor: WidgetStatePropertyAll(Colors.white),
+            elevation: WidgetStatePropertyAll(5),
+            iconColor: WidgetStatePropertyAll(Colors.white),
+            backgroundColor: WidgetStatePropertyAll(Colors.grey))),
+    //>
+
+    //< TextTheme
+    textTheme: const TextTheme(bodyMedium: TextStyle(color: Colors.white)),
+    //>
+
+    //< AppColors
+    primaryColor: const Color.fromARGB(255, 70, 119, 204),
+    shadowColor: const Color.fromARGB(136, 251, 234, 234),
+    //>
+
+    // colorScheme
+    colorScheme: const ColorScheme.light(
+      tertiary: Color.fromARGB(95, 220, 220, 220),
+      secondary: Colors.grey,
+      outline: Colors.white,
+      secondaryContainer: Color.fromARGB(255, 205, 205, 205),
+      tertiaryContainer: Colors.black,
+    ),
+    //>
+  );
 }

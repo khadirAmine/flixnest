@@ -102,7 +102,7 @@ class IframeCard extends StatelessWidget {
         width: Get.width,
         height: Get.height,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Colors.blueGrey,
           border: Border.all(color: _appTheme.colorScheme.secondaryContainer),
           borderRadius: BorderRadius.circular(10),
         ),

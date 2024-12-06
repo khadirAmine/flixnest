@@ -126,43 +126,39 @@ class HomeDrawer extends StatelessWidget {
                       color: _appTheme.primaryColor,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: _appTheme.shadowColor)),
-                  child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: Get.height * 0.01),
-                      child: Row(children: [
-                        Text(modeDesc, style: const TextStyle(fontSize: 20)),
-                        const Spacer(),
-                        GetBuilder<HomeController>(
-                            id: 'switch',
-                            builder: (controller) => Switch(
-                                  value: switchValue,
-                                  onChanged: (value) async {
-                                    Get.defaultDialog(
-                                      backgroundColor:
-                                          _appTheme.scaffoldBackgroundColor,
-                                      title:
-                                          'الانتقال الى الوضع ${switchValue ? 'الليلي' : 'النهاري'}',
-                                      middleText:
-                                          'المرجوا اعادة تشغيل التطبيق للانتقال الى الوضع ${switchValue ? 'الليلي' : 'النهاري'}',
-                                      textConfirm: 'تغيير',
-                                      textCancel: 'الغاء',
-                                      onCancel: () => Get.back(),
-                                      onConfirm: () async {
-                                        switchValue = !switchValue;
-                                        controller.update(['switch']);
-                                        await AppTheme()
-                                            .instance
-                                            .changeThemeMode(switchValue
-                                                ? ThemeMode.light
-                                                : ThemeMode.dark);
-                                        Get.back();
-                                        exit(1);
-                                      },
-                                    );
+                  child: Row(children: [
+                    Text(modeDesc, style: const TextStyle(fontSize: 20)),
+                    const Spacer(),
+                    GetBuilder<HomeController>(
+                        id: 'switch',
+                        builder: (controller) => Switch(
+                              value: switchValue,
+                              onChanged: (value) async {
+                                Get.defaultDialog(
+                                  backgroundColor:
+                                      _appTheme.scaffoldBackgroundColor,
+                                  title:
+                                      'الانتقال الى الوضع ${switchValue ? 'الليلي' : 'النهاري'}',
+                                  middleText:
+                                      'المرجوا اعادة تشغيل التطبيق للانتقال الى الوضع ${switchValue ? 'الليلي' : 'النهاري'}',
+                                  textConfirm: 'تغيير',
+                                  textCancel: 'الغاء',
+                                  onCancel: () => Get.back(),
+                                  onConfirm: () async {
+                                    switchValue = !switchValue;
+                                    controller.update(['switch']);
+                                    await AppTheme().instance.changeThemeMode(
+                                        switchValue
+                                            ? ThemeMode.light
+                                            : ThemeMode.dark);
+                                    Get.back();
+                                    exit(1);
                                   },
-                                )),
-                        SizedBox(width: Get.width * 0.01)
-                      ])),
+                                );
+                              },
+                            )),
+                    SizedBox(width: Get.width * 0.01)
+                  ]),
                 ),
               ]);
   }

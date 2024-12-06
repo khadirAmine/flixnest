@@ -62,10 +62,11 @@ class _DetailsBodyState extends State<DetailsBody> {
               ]),
               ListTile(
                 title: Text(value,
-                    style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black)),
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                      color: _appTheme.colorScheme.outline,
+                    )),
                 titleAlignment: ListTileTitleAlignment.top,
                 dense: true,
               ),
