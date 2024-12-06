@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
@@ -130,26 +132,35 @@ class HomeDrawer extends StatelessWidget {
                       child: Row(children: [
                         Text(modeDesc, style: const TextStyle(fontSize: 20)),
                         const Spacer(),
-                        Switch(
-                          value: switchValue,
-                          onChanged: (value) async {
-                            switchValue = !switchValue;
-                            controller.update(['drawerBody']);
-                            await AppTheme().instance.changeThemeMode(
-                                !switchValue
-                                    ? ThemeMode.dark
-                                    : ThemeMode.light);
-                          },
-                          activeThumbImage: AssetImage(AppAsset().images.sun),
-                          inactiveThumbImage:
-                              AssetImage(AppAsset().images.moon),
-                          trackOutlineColor: WidgetStatePropertyAll(
-                              _appTheme.colorScheme.secondary),
-                          thumbColor:
-                              const WidgetStatePropertyAll(Colors.white),
-                          trackColor: const WidgetStatePropertyAll(
-                              Color.fromARGB(255, 70, 70, 70)),
-                        ),
+                        GetBuilder<HomeController>(
+                            id: 'switch',
+                            builder: (controller) => Switch(
+                                  value: switchValue,
+                                  onChanged: (value) async {
+                                    Get.defaultDialog(
+                                      backgroundColor:
+                                          _appTheme.scaffoldBackgroundColor,
+                                      title:
+                                          'الانتقال الى الوضع ${switchValue ? 'الليلي' : 'النهاري'}',
+                                      middleText:
+                                          'المرجوا اعادة تشغيل التطبيق للانتقال الى الوضع ${switchValue ? 'الليلي' : 'النهاري'}',
+                                      textConfirm: 'تغيير',
+                                      textCancel: 'الغاء',
+                                      onCancel: () => Get.back(),
+                                      onConfirm: () async {
+                                        switchValue = !switchValue;
+                                        controller.update(['switch']);
+                                        await AppTheme()
+                                            .instance
+                                            .changeThemeMode(switchValue
+                                                ? ThemeMode.light
+                                                : ThemeMode.dark);
+                                        Get.back();
+                                        exit(1);
+                                      },
+                                    );
+                                  },
+                                )),
                         SizedBox(width: Get.width * 0.01)
                       ])),
                 ),

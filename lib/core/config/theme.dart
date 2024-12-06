@@ -82,7 +82,14 @@ class AppTheme {
       //>
 
       //< switch
-      switchTheme: SwitchThemeData(),
+      switchTheme: const SwitchThemeData(
+        thumbIcon:
+            WidgetStatePropertyAll(Icon(Icons.light_mode, color: Colors.white)),
+        trackOutlineColor:
+            WidgetStatePropertyAll(Color.fromARGB(255, 250, 182, 92)),
+        thumbColor: WidgetStatePropertyAll(Colors.black),
+        trackColor: WidgetStatePropertyAll(Color.fromARGB(255, 242, 242, 242)),
+      ),
       //>
 
       //< IconButtonTheme
@@ -115,10 +122,24 @@ class AppTheme {
 
   //* dark Theme
   final ThemeData darkTheme = ThemeData(
-    useMaterial3: true,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.grey,
-    ),
-    splashColor: const Color.fromARGB(255, 91, 151, 255),
-  );
+      useMaterial3: true,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.grey,
+      ),
+      splashColor: const Color.fromARGB(255, 91, 151, 255),
+
+      //< switch
+      switchTheme: const SwitchThemeData(
+        thumbIcon:
+            WidgetStatePropertyAll(Icon(Icons.dark_mode, color: Colors.black)),
+        trackOutlineColor: WidgetStatePropertyAll(
+          //todo: _appTheme.colorScheme.secondary
+          Colors.grey,
+        ),
+        thumbColor: WidgetStatePropertyAll(Colors.white),
+        trackColor: WidgetStatePropertyAll(Color.fromARGB(255, 70, 70, 70)),
+      ),
+      //>
+
+      colorScheme: const ColorScheme.dark(secondary: Colors.grey));
 }
