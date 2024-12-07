@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+
+import '../../../core/config/theme.dart';
 
 class GridViewLoading {
   static builder({
     int? itemCount,
     required Widget Function(int index) itemBuilder,
-    required void Function() onEnd,
+    required Future<void> Function() onEnd,
   }) =>
       GridViewBuilder(
           itemCount: itemCount, itemBuilder: itemBuilder, onEnd: onEnd);
@@ -20,7 +23,7 @@ class GridViewBuilder extends StatefulWidget {
   });
   final int? itemCount;
   final Widget Function(int index) itemBuilder;
-  final void Function() onEnd;
+  final Future<void> Function() onEnd;
 
   @override
   State<GridViewBuilder> createState() => _GridViewBuilderState();
@@ -32,10 +35,9 @@ class _GridViewBuilderState extends State<GridViewBuilder> {
 
   @override
   void initState() {
-    controller.addListener(() {
+    controller.addListener(() async {
       if (controller.position.maxScrollExtent == controller.offset) {
-        showLoading.value = true;
-        widget.onEnd.call();
+        await _loadingMore();
       }
     });
 
@@ -69,11 +71,20 @@ class _GridViewBuilderState extends State<GridViewBuilder> {
                 SizedBox(height: Get.height * 0.025),
                 Container(
                     alignment: Alignment.center,
-                    child: const CircularProgressIndicator()),
+                    child: SpinKitDualRing(
+                      color: AppTheme().instance.theme.colorScheme.secondary,
+                      size: ((Get.width + Get.height) / 2) * 0.06,
+                    )),
                 SizedBox(height: Get.height * 0.015),
               ])
             : const SizedBox(),
       )
     ]);
+  }
+
+  Future<void> _loadingMore() async {
+    showLoading.value = true;
+    await widget.onEnd.call();
+    showLoading.value = false;
   }
 }

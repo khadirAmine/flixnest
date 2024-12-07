@@ -1,17 +1,30 @@
 import 'package:get/get.dart';
 
 import '../core/service/scrapping_service.dart';
-import '../data/models/item_details_model.dart';
 
 class DetailsController extends GetxController {
   late String href;
-  ItemDetailsModel? itemDetailsModel;
+  late String title;
+  bool isLoading = false;
+
+  Future<Map<String, dynamic>> getData({String? authorHref}) async {
+    Map<String, dynamic> data =
+        await ScrappingService.getItemDetails(authorHref ?? href);
+    return data;
+  }
+
+  Future retry() async {
+    isLoading = true;
+    update();
+    await getData();
+    isLoading = false;
+    update();
+  }
 
   @override
-  void onInit() async {
+  void onInit() {
     href = Get.arguments['href'];
-    itemDetailsModel = await ScrappingService.getItemDetails(href);
-    update();
+    title = Get.arguments['title'];
     super.onInit();
   }
 }

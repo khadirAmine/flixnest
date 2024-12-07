@@ -1,8 +1,7 @@
-import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-import '../../controller/home_controller.dart';
 import '../config/app_config.dart';
-import '../service/scrapping_service.dart';
+import '../config/theme.dart';
 
 logger(String? message) {
   // ignore: avoid_print
@@ -10,7 +9,12 @@ logger(String? message) {
 }
 
 Future initServices() async {
-  HomeController homeController = Get.put(HomeController());
   await AppConfig.init();
-  homeController.items = await ScrappingService.getItems();
+  await AppTheme.initTheme();
+}
+
+Future<bool> checkConnectionStatus() async {
+  InternetConnectionStatus connectionStatus =
+      await InternetConnectionChecker().connectionStatus;
+  return connectionStatus == InternetConnectionStatus.connected ? true : false;
 }
