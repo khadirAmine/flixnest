@@ -25,7 +25,7 @@ class IframeCard extends StatelessWidget {
     return Container(
         margin: EdgeInsets.symmetric(horizontal: Get.width * 0.1),
         height: Get.height * 0.25,
-        width: Get.width * 0.99,
+        width: Get.width,
         decoration: BoxDecoration(
             color: Colors.yellow, borderRadius: BorderRadius.circular(10)),
         child: ClipRRect(

@@ -10,13 +10,14 @@ class AppTheme {
   late ThemeMode themeMode;
   late ThemeData theme;
 
-  static initTheme() async {
+  static init() async {
     logger('init Theme');
     _instance.themeMode = await _instance._getThemeMode();
     _instance.theme = _instance._getTheme();
   }
 
   Future<ThemeMode> _getThemeMode() async {
+    logger('get Theme mode');
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     late String themeMode;
     themeMode = sharedPreferences.getString('themeMode') ?? 'system';
@@ -26,12 +27,12 @@ class AppTheme {
       case 'dark':
         return ThemeMode.dark;
       default:
-        bool isDarkMode = Get.isPlatformDarkMode;
-        return isDarkMode ? ThemeMode.dark : ThemeMode.light;
+        return Get.isPlatformDarkMode ? ThemeMode.dark : ThemeMode.light;
     }
   }
 
   ThemeData _getTheme() {
+    logger('get Theme');
     switch (themeMode) {
       case ThemeMode.light:
         return lightTheme;
@@ -44,8 +45,7 @@ class AppTheme {
       {GetxController? getxController}) async {
     logger('change Theme Mode');
     if (newThemeMode == ThemeMode.system) {
-      bool isDarkMode = Get.isPlatformDarkMode;
-      isDarkMode
+      Get.isPlatformDarkMode
           ? _instance.themeMode = ThemeMode.dark
           : _instance.themeMode = ThemeMode.light;
     } else {
@@ -55,13 +55,7 @@ class AppTheme {
     Get.changeTheme(_instance.theme);
     getxController?.update();
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setString(
-        'themeMode',
-        _instance.themeMode == ThemeMode.light
-            ? 'light'
-            : _instance.themeMode == ThemeMode.dark
-                ? 'dark'
-                : 'system');
+    await sharedPreferences.setString('themeMode', _instance.themeMode.name);
     Get.appUpdate();
   }
 
@@ -131,7 +125,7 @@ class AppTheme {
     appBarTheme: AppBarTheme(
       backgroundColor: const Color.fromARGB(255, 70, 119, 204),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      shadowColor: Colors.white,
+      shadowColor: const Color.fromARGB(188, 255, 255, 255),
       elevation: 6,
       scrolledUnderElevation: 300,
       iconTheme: const IconThemeData(color: Colors.white),
@@ -153,7 +147,8 @@ class AppTheme {
     //< IconButtonTheme
     iconButtonTheme: const IconButtonThemeData(
         style: ButtonStyle(
-            shadowColor: WidgetStatePropertyAll(Colors.white),
+            shadowColor:
+                WidgetStatePropertyAll(Color.fromARGB(208, 255, 255, 255)),
             elevation: WidgetStatePropertyAll(5),
             iconColor: WidgetStatePropertyAll(Colors.white),
             backgroundColor: WidgetStatePropertyAll(Colors.grey))),

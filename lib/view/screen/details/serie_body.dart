@@ -64,11 +64,11 @@ class _SerieBodyState extends State<SerieBody> {
           }
           return ListView(
             children: [
-              SizedBox(height: Get.height * 0.02),
+              SizedBox(height: Get.height * 0.03),
               IframeCard(
                   iframe: _model.iframe ?? 'www.google.com',
                   imageUrl: _model.imageUrl ?? errorImageLink),
-              SizedBox(height: Get.height * 0.02),
+              SizedBox(height: Get.height * 0.03),
               Wrap(
                 spacing: Get.width * 0.015,
                 runSpacing: Get.height * 0.015,
