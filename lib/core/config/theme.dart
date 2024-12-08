@@ -11,6 +11,7 @@ class AppTheme {
   late ThemeData theme;
 
   static initTheme() async {
+    logger('init Theme');
     _instance.themeMode = await _instance._getThemeMode();
     _instance.theme = _instance._getTheme();
   }

@@ -20,9 +20,9 @@ class HomeDrawer extends StatelessWidget {
 
   InAppWebViewController? _webViewController;
 
-  final ThemeData _appTheme = AppTheme().instance.theme;
+  final HomeController _homeController = Get.find<HomeController>();
 
-  Map<String, dynamic>? categorysData = {};
+  final ThemeData _appTheme = AppTheme().instance.theme;
 
   late String modeDesc;
 
@@ -32,7 +32,6 @@ class HomeDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
         initState: (state) {
-          isLoading = true;
           modeDesc = AppTheme().instance.themeMode == ThemeMode.dark
               ? 'تفعيل الوضع النهاري'
               : 'تفعيل الوضع الليلي';
@@ -85,7 +84,7 @@ class HomeDrawer extends StatelessWidget {
       );
 
   Widget _buildBody(HomeController controller) {
-    return categorysData?['connectionStatus'] == false
+    return _homeController.drawerCategorysData?['connectionStatus'] == false
         ? SizedBox(
             height: Get.height,
             child: NoWifiWidget(
@@ -98,7 +97,7 @@ class HomeDrawer extends StatelessWidget {
               },
             ),
           )
-        : categorysData?['error']?['status'] == true
+        : _homeController.drawerCategorysData?['error']?['status'] == true
             ? SizedBox(
                 height: Get.height,
                 child: ErrorBodyWidget(
@@ -109,14 +108,19 @@ class HomeDrawer extends StatelessWidget {
                     isLoading = false;
                     controller.update(['drawerBody']);
                   },
-                  statusCode: categorysData?['statusCode'],
+                  statusCode:
+                      _homeController.drawerCategorysData?['statusCode'],
                 ))
             : Column(children: [
                 SizedBox(height: Get.height * 0.1),
                 ...List.generate(
-                    categorysData?['body']?['categorys'].length ?? 0,
+                    _homeController.drawerCategorysData?['body']?['categorys']
+                            .length ??
+                        0,
                     (i) => _buildButtonList(
-                        categorysData?['body']['categorys'].elementAt(i),
+                        _homeController.drawerCategorysData?['body']
+                                ['categorys']
+                            .elementAt(i),
                         controller)),
                 Container(
                   width: Get.width,
@@ -143,7 +147,9 @@ class HomeDrawer extends StatelessWidget {
                                       'المرجوا اعادة تشغيل التطبيق للانتقال الى الوضع ${switchValue ? 'الليلي' : 'النهاري'}',
                                   textConfirm: 'تغيير',
                                   textCancel: 'الغاء',
-                                  onCancel: () => Get.back(),
+                                  onCancel: () {
+                                    Get.close(1);
+                                  },
                                   onConfirm: () async {
                                     switchValue = !switchValue;
                                     controller.update(['switch']);
@@ -151,7 +157,6 @@ class HomeDrawer extends StatelessWidget {
                                         switchValue
                                             ? ThemeMode.light
                                             : ThemeMode.dark);
-                                    Get.back();
                                     exit(1);
                                   },
                                 );
@@ -205,21 +210,29 @@ class HomeDrawer extends StatelessWidget {
 """);
         },
         onLoadStart: (controller, url) {
-          isLoading = true;
-          homeController.update(['drawerBody']);
+          if (_homeController.drawerCategorysData == null) {
+            isLoading = true;
+            homeController.update(['drawerBody']);
+          }
         },
         onLoadStop: (controller, url) async {
-          String? html = await controller.getHtml();
-          categorysData = await ScrappingService.getCategorys(html);
-          isLoading = false;
-          homeController.update(['drawerBody']);
+          if (_homeController.drawerCategorysData == null) {
+            String? html = await controller.getHtml();
+            _homeController.drawerCategorysData =
+                await ScrappingService.getCategorys(html);
+            isLoading = false;
+            homeController.update(['drawerBody']);
+          }
         },
         onReceivedError: (controller, request, error) async {
-          String? html = await controller.getHtml();
-          categorysData = await ScrappingService.getCategorys(html,
-              hasError: true, error: error);
-          isLoading = false;
-          homeController.update(['drawerBody']);
+          if (_homeController.drawerCategorysData == null) {
+            String? html = await controller.getHtml();
+            _homeController.drawerCategorysData =
+                await ScrappingService.getCategorys(html,
+                    hasError: true, error: error);
+            isLoading = false;
+            homeController.update(['drawerBody']);
+          }
         },
       );
 
