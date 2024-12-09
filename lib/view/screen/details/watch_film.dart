@@ -17,11 +17,11 @@ class WatchFilm extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        SizedBox(height: Get.height * 0.02),
+        SizedBox(height: Get.height * 0.03),
         IframeCard(
             iframe: model.iframe ?? 'www.google.com',
             imageUrl: model.imageUrl ?? errorImageLink),
-        SizedBox(height: Get.height * 0.02),
+        SizedBox(height: Get.height * 0.03),
         const Text('  عروض مشابهة',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
         SizedBox(height: Get.height * 0.02),

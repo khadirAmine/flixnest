@@ -11,6 +11,7 @@ import '../../../core/service/scrapping_service.dart';
 import '../shared/custom_circular_progress.dart';
 import '../shared/error_widget.dart';
 import '../shared/no_wifi_widget.dart';
+import 'personnel_card.dart';
 
 // ignore: must_be_immutable
 class HomeDrawer extends StatelessWidget {
@@ -20,9 +21,9 @@ class HomeDrawer extends StatelessWidget {
 
   InAppWebViewController? _webViewController;
 
-  final ThemeData _appTheme = AppTheme().instance.theme;
+  final HomeController _homeController = Get.find<HomeController>();
 
-  Map<String, dynamic>? categorysData = {};
+  final ThemeData _appTheme = AppTheme().instance.theme;
 
   late String modeDesc;
 
@@ -32,7 +33,6 @@ class HomeDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
         initState: (state) {
-          isLoading = true;
           modeDesc = AppTheme().instance.themeMode == ThemeMode.dark
               ? 'تفعيل الوضع النهاري'
               : 'تفعيل الوضع الليلي';
@@ -53,15 +53,76 @@ class HomeDrawer extends StatelessWidget {
                       bottomLeft: Radius.circular(15))),
               child: SingleChildScrollView(
                   physics: const NeverScrollableScrollPhysics(),
-                  child: Column(children: [
-                    _buildHeader(controller),
-                    GetBuilder<HomeController>(
-                      id: 'drawerBody',
-                      builder: (bodyController) => isLoading
-                          ? _loadingWidget()
-                          : _buildBody(bodyController),
-                    )
-                  ])),
+                  child: SizedBox(
+                    height: Get.height * 0.99,
+                    child: Column(children: [
+                      _buildHeader(controller),
+                      GetBuilder<HomeController>(
+                        id: 'drawerBody',
+                        builder: (bodyController) => isLoading
+                            ? _loadingWidget()
+                            : _buildBody(bodyController),
+                      ),
+                      Container(
+                        width: Get.width,
+                        padding: EdgeInsets.only(right: Get.width * 0.05),
+                        margin:
+                            EdgeInsets.symmetric(vertical: Get.height * 0.005),
+                        decoration: BoxDecoration(
+                            color: _appTheme.primaryColor,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: _appTheme.shadowColor)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: Get.height * 0.001),
+                          child: Row(children: [
+                            Text(modeDesc,
+                                style: const TextStyle(fontSize: 20)),
+                            const Spacer(),
+                            GetBuilder<HomeController>(
+                                id: 'switch',
+                                builder: (controller) => Switch(
+                                      value: switchValue,
+                                      onChanged: (value) async {
+                                        Get.defaultDialog(
+                                          backgroundColor:
+                                              _appTheme.scaffoldBackgroundColor,
+                                          title:
+                                              'الانتقال الى الوضع ${switchValue ? 'الليلي' : 'النهاري'}',
+                                          middleText:
+                                              'المرجوا اعادة تشغيل التطبيق للانتقال الى الوضع ${switchValue ? 'الليلي' : 'النهاري'}',
+                                          textConfirm: 'تغيير',
+                                          textCancel: 'الغاء',
+                                          onCancel: () {
+                                            Get.back();
+                                          },
+                                          onConfirm: () async {
+                                            switchValue = !switchValue;
+                                            controller.update(['switch']);
+                                            await AppTheme()
+                                                .instance
+                                                .changeThemeMode(switchValue
+                                                    ? ThemeMode.light
+                                                    : ThemeMode.dark);
+                                            exit(1);
+                                          },
+                                        );
+                                      },
+                                    )),
+                            SizedBox(width: Get.width * 0.01)
+                          ]),
+                        ),
+                      ),
+                      PersonnelCard(),
+                      const Spacer(),
+                      const Text.rich(TextSpan(children: [
+                        TextSpan(text: 'Developed by '),
+                        TextSpan(
+                            text: 'Amine Khadir',
+                            style: TextStyle(fontWeight: FontWeight.w700))
+                      ])),
+                    ]),
+                  )),
             ));
   }
 
@@ -75,6 +136,7 @@ class HomeDrawer extends StatelessWidget {
                 alignment: Alignment.center,
                 width: Get.width,
                 height: Get.height * 0.1,
+                padding: EdgeInsets.only(top: Get.height * 0.01),
                 decoration: BoxDecoration(
                     color: _appTheme.colorScheme.secondary,
                     borderRadius:
@@ -85,7 +147,7 @@ class HomeDrawer extends StatelessWidget {
       );
 
   Widget _buildBody(HomeController controller) {
-    return categorysData?['connectionStatus'] == false
+    return _homeController.drawerCategorysData?['connectionStatus'] == false
         ? SizedBox(
             height: Get.height,
             child: NoWifiWidget(
@@ -98,7 +160,7 @@ class HomeDrawer extends StatelessWidget {
               },
             ),
           )
-        : categorysData?['error']?['status'] == true
+        : _homeController.drawerCategorysData?['error']?['status'] == true
             ? SizedBox(
                 height: Get.height,
                 child: ErrorBodyWidget(
@@ -109,57 +171,20 @@ class HomeDrawer extends StatelessWidget {
                     isLoading = false;
                     controller.update(['drawerBody']);
                   },
-                  statusCode: categorysData?['statusCode'],
+                  statusCode:
+                      _homeController.drawerCategorysData?['statusCode'],
                 ))
             : Column(children: [
                 SizedBox(height: Get.height * 0.1),
                 ...List.generate(
-                    categorysData?['body']?['categorys'].length ?? 0,
+                    _homeController.drawerCategorysData?['body']?['categorys']
+                            .length ??
+                        0,
                     (i) => _buildButtonList(
-                        categorysData?['body']['categorys'].elementAt(i),
+                        _homeController.drawerCategorysData?['body']
+                                ['categorys']
+                            .elementAt(i),
                         controller)),
-                Container(
-                  width: Get.width,
-                  padding: EdgeInsets.only(right: Get.width * 0.05),
-                  margin: EdgeInsets.symmetric(vertical: Get.height * 0.005),
-                  decoration: BoxDecoration(
-                      color: _appTheme.primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: _appTheme.shadowColor)),
-                  child: Row(children: [
-                    Text(modeDesc, style: const TextStyle(fontSize: 20)),
-                    const Spacer(),
-                    GetBuilder<HomeController>(
-                        id: 'switch',
-                        builder: (controller) => Switch(
-                              value: switchValue,
-                              onChanged: (value) async {
-                                Get.defaultDialog(
-                                  backgroundColor:
-                                      _appTheme.scaffoldBackgroundColor,
-                                  title:
-                                      'الانتقال الى الوضع ${switchValue ? 'الليلي' : 'النهاري'}',
-                                  middleText:
-                                      'المرجوا اعادة تشغيل التطبيق للانتقال الى الوضع ${switchValue ? 'الليلي' : 'النهاري'}',
-                                  textConfirm: 'تغيير',
-                                  textCancel: 'الغاء',
-                                  onCancel: () => Get.back(),
-                                  onConfirm: () async {
-                                    switchValue = !switchValue;
-                                    controller.update(['switch']);
-                                    await AppTheme().instance.changeThemeMode(
-                                        switchValue
-                                            ? ThemeMode.light
-                                            : ThemeMode.dark);
-                                    Get.back();
-                                    exit(1);
-                                  },
-                                );
-                              },
-                            )),
-                    SizedBox(width: Get.width * 0.01)
-                  ]),
-                ),
               ]);
   }
 
@@ -205,19 +230,25 @@ class HomeDrawer extends StatelessWidget {
 """);
         },
         onLoadStart: (controller, url) {
-          isLoading = true;
-          homeController.update(['drawerBody']);
+          if (_homeController.drawerCategorysData == null) {
+            isLoading = true;
+            homeController.update(['drawerBody']);
+          }
         },
         onLoadStop: (controller, url) async {
-          String? html = await controller.getHtml();
-          categorysData = await ScrappingService.getCategorys(html);
-          isLoading = false;
-          homeController.update(['drawerBody']);
+          if (_homeController.drawerCategorysData == null) {
+            String? html = await controller.getHtml();
+            _homeController.drawerCategorysData =
+                await ScrappingService.getCategorys(html);
+            isLoading = false;
+            homeController.update(['drawerBody']);
+          }
         },
         onReceivedError: (controller, request, error) async {
           String? html = await controller.getHtml();
-          categorysData = await ScrappingService.getCategorys(html,
-              hasError: true, error: error);
+          _homeController.drawerCategorysData =
+              await ScrappingService.getCategorys(html,
+                  hasError: true, error: error);
           isLoading = false;
           homeController.update(['drawerBody']);
         },

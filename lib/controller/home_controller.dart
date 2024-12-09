@@ -9,6 +9,7 @@ class HomeController extends GetxController {
   Map<String, dynamic> itemsData = {};
   bool isLoading = false;
   String title = 'الكل';
+  Map<String, dynamic>? drawerCategorysData;
 
   Future reTry() async {
     isLoading = true;

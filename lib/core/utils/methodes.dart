@@ -10,7 +10,7 @@ logger(String? message) {
 
 Future initServices() async {
   await AppConfig.init();
-  await AppTheme.initTheme();
+  await AppTheme.init();
 }
 
 Future<bool> checkConnectionStatus() async {
