@@ -28,6 +28,7 @@ class Home extends StatelessWidget {
               icon: const Icon(Icons.menu),
               onPressed: () async {
                 scaffoldState.currentState?.openDrawer();
+                await AdsService.showAd(AdsService.interstitialAdPlacementId);
               }),
           automaticallyImplyLeading: false,
           title: HomeSearchBar(),

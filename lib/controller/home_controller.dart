@@ -25,8 +25,8 @@ class HomeController extends GetxController {
         opacity: 1,
         opacityColor: Colors.white,
         asyncFunction: () async {
-          Map<String, dynamic> data = await ScrappingService.getItems();
-          itemsData = data;
+          itemsData = await ScrappingService.getItems();
+
           update(['homeBody', 'homeSearchBar']);
         },
         loadingWidget: SpleachScreen());
