@@ -3,6 +3,9 @@ class ImageAssets {
   final String logo = 'assets/images/logo.png';
   final String sun = 'assets/images/sun.png';
   final String moon = 'assets/images/moon.png';
+  final String whatsapp = 'assets/images/whatsapp.png';
+  final String gmail = 'assets/images/gmail.png';
+  final String copy = 'assets/images/copy.png';
 }
 
 class SvgAssets {

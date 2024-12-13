@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -8,18 +9,29 @@ import '../../../core/config/theme.dart';
 class ShareButton extends StatelessWidget {
   ShareButton({super.key});
   final ThemeData _appTheme = AppTheme().instance.theme;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         Get.bottomSheet(Container(
-          height: Get.height * 0.15,
+          height: Get.height * 0.12,
+          alignment: const Alignment(0, -0.7),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10), topRight: Radius.circular(10)),
             color: _appTheme.colorScheme.tertiaryContainer,
           ),
-          child: Row(children: []),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            _buildShareItem(
+                onTap: () async {
+                  await _copy();
+                },
+                imageSr: AppAsset().images.copy),
+            _buildShareItem(onTap: () {}, imageSr: AppAsset().images.gmail),
+            _buildShareItem(onTap: () {}, imageSr: AppAsset().images.whatsapp),
+          ]),
         ));
       },
       child: Container(
@@ -41,5 +53,34 @@ class ShareButton extends StatelessWidget {
             )
           ])),
     );
+  }
+
+  Widget _buildShareItem(
+          {required Function() onTap, required String imageSr}) =>
+      Card(
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: InkWell(
+            onTap: onTap,
+            child:
+                SizedBox(width: Get.width * 0.13, child: Image.asset(imageSr)),
+          ),
+        ),
+      );
+
+  Future _copy() async {
+    await Clipboard.setData(const ClipboardData(text: 'test copy text '))
+        .then((_) {
+      Get.showSnackbar(GetSnackBar(
+        duration: const Duration(seconds: 2),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: _appTheme.colorScheme.tertiaryContainer,
+        messageText: const Text('link copied',
+            textAlign: TextAlign.center, style: TextStyle(fontSize: 20)),
+        borderRadius: 1000,
+        maxWidth: Get.width * 0.5,
+      ));
+    });
   }
 }
