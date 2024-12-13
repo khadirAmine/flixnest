@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/details_controller.dart';
+import '../../../core/service/ads_service.dart';
 import 'details_body.dart';
 import 'serie_body.dart';
 import '../../widgets/details_widgets/top_navigation_bar.dart';
@@ -82,8 +83,12 @@ class Details extends StatelessWidget {
                                   snapshot.data?['body']['details']['isFilm'] ??
                                       false,
                                   snapshot.data?['body'] ?? {}),
-                              onPageChanged: (value) {
+                              onPageChanged: (value) async {
                                 indexBody = value;
+                                if (value == 1) {
+                                  await AdsService.showAd(
+                                      AdsService.interstitialAdPlacementId);
+                                }
                                 controller.update(['topNavigationBar']);
                               },
                             ),
