@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/config/theme.dart';
-import '../../../core/service/ads_service.dart';
 
 // ignore: must_be_immutable
 class TopNavigationBar extends StatefulWidget {
@@ -54,9 +53,6 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
         widget.selectedIndex = i;
         setState(() {});
         widget.getItem.call(i);
-        if (widget.selectedIndex == 1) {
-          await AdsService.showAd(AdsService.rewardedAdPlacementId);
-        }
       },
       child: AnimatedSize(
         duration: const Duration(milliseconds: 100),
@@ -72,7 +68,7 @@ class _TopNavigationBarState extends State<TopNavigationBar> {
                         fontSize: 19,
                         fontWeight: FontWeight.w700,
                       )
-                    : null,
+                    : const TextStyle(fontWeight: FontWeight.w600),
               ),
               widget.selectedIndex == i
                   ? Container(

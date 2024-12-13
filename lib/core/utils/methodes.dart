@@ -4,6 +4,7 @@ import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import '../config/app_config.dart';
 import '../config/theme.dart';
 import '../service/ads_service.dart';
+import '../service/firebase_service.dart';
 
 logger(String? message) {
   // ignore: avoid_print
@@ -19,6 +20,7 @@ Future initServices() async {
     onFailed: (error, message) =>
         logger('init Unity ads Failed: $error $message'),
   );
+  await FirebaseService.init();
 }
 
 Future<bool> checkConnectionStatus() async {

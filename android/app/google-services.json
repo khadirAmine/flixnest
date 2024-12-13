@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "618574486982",
+    "project_id": "flixnest-dcc1d",
+    "storage_bucket": "flixnest-dcc1d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618574486982:android:06d22dcde8595a07db26c7",
+        "android_client_info": {
+          "package_name": "serie.flixnest.movie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3LqgVftfnH2GBTccGn6VNB-FiAnwJdoI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
