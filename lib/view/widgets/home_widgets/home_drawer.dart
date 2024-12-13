@@ -46,12 +46,22 @@ class HomeDrawer extends StatelessWidget {
                     height: Get.height * 0.99,
                     child: Column(children: [
                       _buildHeader(controller),
+                      SizedBox(height: Get.height * 0.1),
+                      const SwitchThemeMode(),
+                      PersonnelCard(),
                       GetBuilder<HomeController>(
                         id: 'drawerBody',
                         builder: (bodyController) => isLoading
                             ? _loadingWidget()
                             : _buildBody(bodyController),
                       ),
+                      const Spacer(),
+                      const Text.rich(TextSpan(children: [
+                        TextSpan(text: 'Developed by '),
+                        TextSpan(
+                            text: 'Amine Khadir',
+                            style: TextStyle(fontWeight: FontWeight.w700))
+                      ])),
                     ]),
                   )),
             ));
@@ -79,8 +89,7 @@ class HomeDrawer extends StatelessWidget {
 
   Widget _buildBody(HomeController controller) {
     return _homeController.drawerCategorysData?['connectionStatus'] == false
-        ? SizedBox(
-            height: Get.height * 0.85,
+        ? Expanded(
             child: NoWifiWidget(
               onTapRetry: () async {
                 isLoading = true;
@@ -92,21 +101,18 @@ class HomeDrawer extends StatelessWidget {
             ),
           )
         : _homeController.drawerCategorysData?['error']?['status'] == true
-            ? SizedBox(
-                height: Get.height * 0.85,
+            ? Expanded(
                 child: ErrorBodyWidget(
-                  onTapRetry: () async {
-                    isLoading = true;
-                    controller.update(['drawerBody']);
-                    await _webViewController?.reload();
-                    isLoading = false;
-                    controller.update(['drawerBody']);
-                  },
-                  statusCode:
-                      _homeController.drawerCategorysData?['statusCode'],
-                ))
+                onTapRetry: () async {
+                  isLoading = true;
+                  controller.update(['drawerBody']);
+                  await _webViewController?.reload();
+                  isLoading = false;
+                  controller.update(['drawerBody']);
+                },
+                statusCode: _homeController.drawerCategorysData?['statusCode'],
+              ))
             : Column(children: [
-                SizedBox(height: Get.height * 0.1),
                 ...List.generate(
                     _homeController.drawerCategorysData?['body']?['categorys']
                             .length ??
@@ -116,17 +122,6 @@ class HomeDrawer extends StatelessWidget {
                                 ['categorys']
                             .elementAt(i),
                         controller)),
-                const SwitchThemeMode(),
-                PersonnelCard(),
-                const Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Text.rich(TextSpan(children: [
-                    TextSpan(text: 'Developed by '),
-                    TextSpan(
-                        text: 'Amine Khadir',
-                        style: TextStyle(fontWeight: FontWeight.w700))
-                  ])),
-                ),
               ]);
   }
 
@@ -196,9 +191,10 @@ class HomeDrawer extends StatelessWidget {
         },
       );
 
-  Widget _loadingWidget() => Container(
-        alignment: Alignment.center,
-        height: Get.height * 0.85,
-        child: CustomCircularProgress(color: _appTheme.primaryColor),
+  Widget _loadingWidget() => Expanded(
+        child: Container(
+          alignment: Alignment.center,
+          child: CustomCircularProgress(color: _appTheme.primaryColor),
+        ),
       );
 }
