@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../../core/config/assets.dart';
 import '../../../core/config/constants.dart';
 import '../../../core/config/theme.dart';
+import '../../../core/service/ads_service.dart';
 import '../../../data/models/item_details_model.dart';
 
 class DetailsBody extends StatefulWidget {
@@ -37,17 +38,25 @@ class _DetailsBodyState extends State<DetailsBody> {
   }
 
   @override
-  Widget build(BuildContext context) => ListView(children: [
-        _buildImageTitle(),
-        SizedBox(height: Get.height * 0.02),
-        ...List.generate(
-            details.length,
-            (i) => _biuldDetails(
-                  details[i].keys.elementAt(0),
-                  details[i][details[i].keys.elementAt(0)],
-                )),
-        SizedBox(height: Get.height * 0.3),
-      ]);
+  Widget build(BuildContext context) => Stack(
+        children: [
+          ListView(children: [
+            _buildImageTitle(),
+            SizedBox(height: Get.height * 0.02),
+            ...List.generate(
+                details.length,
+                (i) => _biuldDetails(
+                      details[i].keys.elementAt(0),
+                      details[i][details[i].keys.elementAt(0)],
+                    )),
+            SizedBox(height: Get.height * 0.3),
+          ]),
+          Align(
+            alignment: const Alignment(0, 0.7),
+            child: AdsService.showBannerAd(),
+          )
+        ],
+      );
 
   Widget _biuldDetails(String key, String? value) {
     return value != null

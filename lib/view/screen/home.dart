@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../controller/home_controller.dart';
 import '../../core/config/routes.dart';
 import '../../core/config/theme.dart';
+import '../../core/service/ads_service.dart';
 import '../../core/service/scrapping_service.dart';
 import '../../data/models/item_model.dart';
 import '../widgets/home_widgets/grid_view_loading.dart';
@@ -34,7 +35,14 @@ class Home extends StatelessWidget {
         drawer: HomeDrawer(),
         backgroundColor: _appTheme.theme.scaffoldBackgroundColor,
         body: GetBuilder<HomeController>(
-            id: 'homeBody', builder: (controller) => _buildBody(controller)));
+            id: 'homeBody',
+            builder: (controller) => Stack(children: [
+                  _buildBody(controller),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: AdsService.showBannerAd(),
+                  )
+                ])));
   }
 
   Widget _buildBody(HomeController controller) {
