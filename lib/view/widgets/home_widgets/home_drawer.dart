@@ -48,7 +48,7 @@ class HomeDrawer extends StatelessWidget {
                       _buildHeader(controller),
                       SizedBox(height: Get.height * 0.1),
                       const SwitchThemeMode(),
-                      PersonnelCard(),
+                      ShareButton(),
                       GetBuilder<HomeController>(
                         id: 'drawerBody',
                         builder: (bodyController) => isLoading

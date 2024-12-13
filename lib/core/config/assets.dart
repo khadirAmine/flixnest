@@ -10,6 +10,8 @@ class SvgAssets {
   final String error = 'assets/svg/error.svg';
   final String play = 'assets/svg/play.svg';
   final String restart = 'assets/svg/restart.svg';
+  final String share = 'assets/svg/share.svg';
+  final String whatsapp = 'assets/svg/whatsapp.svg';
 }
 
 class AppAsset {

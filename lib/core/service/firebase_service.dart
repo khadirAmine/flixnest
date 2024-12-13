@@ -17,12 +17,18 @@ class FirebaseService {
     _instance.storeLinks = FirebaseFirestore.instance.collection('storeLinks');
   }
 
-  static Future<Map<String, dynamic>> getShareLink() async {
-    Map<String, dynamic> data = {};
+  Future<List<Map<String, dynamic>>> getShareLinks() async {
+    List<Map<String, dynamic>> data = [];
     QuerySnapshot<Object?>? querySnapshot = await _instance.storeLinks?.get();
     for (QueryDocumentSnapshot<Object?> doc in querySnapshot!.docs) {
-      data.addAll(doc.data() as Map<String, dynamic>);
+      data.add(doc.data() as Map<String, dynamic>);
     }
     return data;
+  }
+
+  static Future<String> getShareableLink() async {
+    List<Map<String, dynamic>> links = await _instance.getShareLinks();
+    String link = links.where((el) => el['shareable']).toList()[0]['link'];
+    return link;
   }
 }
