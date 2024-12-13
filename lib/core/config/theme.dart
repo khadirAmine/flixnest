@@ -70,7 +70,7 @@ class AppTheme {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       shadowColor: Colors.black,
       elevation: 6,
-      scrolledUnderElevation: 300,
+      scrolledUnderElevation: 10,
       iconTheme: const IconThemeData(color: Colors.black),
     ),
     //>
@@ -102,7 +102,7 @@ class AppTheme {
 
     //< AppColors
     primaryColor: const Color.fromARGB(255, 91, 151, 255),
-    shadowColor: const Color.fromARGB(137, 108, 101, 101),
+    shadowColor: const Color.fromARGB(114, 108, 101, 101),
     //>
 
     // colorScheme
@@ -127,7 +127,7 @@ class AppTheme {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       shadowColor: const Color.fromARGB(188, 255, 255, 255),
       elevation: 6,
-      scrolledUnderElevation: 300,
+      scrolledUnderElevation: 10,
       iconTheme: const IconThemeData(color: Colors.white),
     ),
     //>
@@ -160,7 +160,7 @@ class AppTheme {
 
     //< AppColors
     primaryColor: const Color.fromARGB(255, 70, 119, 204),
-    shadowColor: const Color.fromARGB(136, 251, 234, 234),
+    shadowColor: const Color.fromARGB(102, 251, 234, 234),
     //>
 
     // colorScheme

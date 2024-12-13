@@ -47,6 +47,7 @@ dependencies:
   flutter_svg: ^2.0.14
   provider: ^6.1.2
   flutter_launcher_icons: ^0.14.2
+  unity_ads_plugin: ^0.3.22
 
 dev_dependencies:
   flutter_test:
