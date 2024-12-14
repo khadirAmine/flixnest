@@ -48,7 +48,7 @@ class HomeDrawer extends StatelessWidget {
                       _buildHeader(controller),
                       SizedBox(height: Get.height * 0.1),
                       const SwitchThemeMode(),
-                      PersonnelCard(),
+                      ShareButton(),
                       GetBuilder<HomeController>(
                         id: 'drawerBody',
                         builder: (bodyController) => isLoading
@@ -138,9 +138,7 @@ class HomeDrawer extends StatelessWidget {
           padding: EdgeInsets.only(right: Get.width * 0.05),
           margin: EdgeInsets.symmetric(vertical: Get.height * 0.005),
           decoration: BoxDecoration(
-              color: items['isSellected']
-                  ? _appTheme.colorScheme.secondary
-                  : _appTheme.primaryColor,
+              color: _appTheme.primaryColor,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: _appTheme.shadowColor)),
           child: Padding(
