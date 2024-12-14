@@ -6,6 +6,7 @@ class ImageAssets {
   final String whatsapp = 'assets/images/whatsapp.png';
   final String gmail = 'assets/images/gmail.png';
   final String copy = 'assets/images/copy.png';
+  final String splashScreen = 'assets/images/splashScreen.png';
 }
 
 class SvgAssets {
