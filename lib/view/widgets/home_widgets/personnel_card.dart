@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../../controller/home_controller.dart';
 import '../../../core/config/assets.dart';
 import '../../../core/config/theme.dart';
+import '../../../core/utils/methodes.dart';
 
 class ShareButton extends StatelessWidget {
   ShareButton({super.key});
   final ThemeData _appTheme = AppTheme().instance.theme;
+
+  final HomeController _homeController = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +34,16 @@ class ShareButton extends StatelessWidget {
                   await _copy();
                 },
                 imageSr: AppAsset().images.copy),
-            _buildShareItem(onTap: () {}, imageSr: AppAsset().images.gmail),
-            _buildShareItem(onTap: () {}, imageSr: AppAsset().images.whatsapp),
+            _buildShareItem(
+                onTap: () async {
+                  await _shareOnEmail();
+                },
+                imageSr: AppAsset().images.gmail),
+            _buildShareItem(
+                onTap: () async {
+                  await _shareOnWhatsApp();
+                },
+                imageSr: AppAsset().images.whatsapp),
           ]),
         ));
       },
@@ -82,5 +95,24 @@ class ShareButton extends StatelessWidget {
         maxWidth: Get.width * 0.5,
       ));
     });
+  }
+
+  Future _shareOnWhatsApp() async {
+    final whatsappUrl =
+        "https://wa.me/?text=${Uri.encodeComponent('install flixnest for watching movie for free from this link : ${_homeController.shareLink}')}";
+    if (!await launchUrl(Uri.parse(whatsappUrl))) {
+      logger('ERROR : Could not launch $whatsappUrl');
+    }
+  }
+
+  Future _shareOnEmail() async {
+    String body =
+        'flixnest is a free application for watching your best movies and seres and tv and anime \nyou can install flixnest from this link : https://${_homeController.shareLink} \n\nBest regards,\nYour Friend';
+    final String emailLaunchUri =
+        'mailto:?subject=${Uri.encodeComponent('flixnest')}&body=${body.replaceAll(' ', '%20')}';
+
+    if (!await launchUrl(Uri.parse(emailLaunchUri))) {
+      logger('ERROR : Could not launch $emailLaunchUri');
+    }
   }
 }
