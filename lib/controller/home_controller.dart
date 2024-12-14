@@ -22,8 +22,8 @@ class HomeController extends GetxController {
   }
 
   @override
-  void onReady() {
-    Get.showOverlay(
+  void onReady() async {
+    await Get.showOverlay(
         opacity: 1,
         opacityColor: Colors.white,
         asyncFunction: () async {
